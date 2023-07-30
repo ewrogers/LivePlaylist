@@ -1,0 +1,11 @@
+PUT http://localhost:3000/playlists/622090bf-f663-42ce-b052-ed92eafc75dd
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "My Playlist",
+  "owner": "erik",
+  "description": "My updated playlist"
+}
+
+###

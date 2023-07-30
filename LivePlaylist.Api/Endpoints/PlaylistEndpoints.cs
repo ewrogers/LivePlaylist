@@ -82,10 +82,14 @@ public class PlaylistEndpoints : IEndpoints
     }
 
     private static async Task<IResult> UpdatePlaylist(
+        Guid id,
         Playlist playlist, 
         IPlaylistService playlistService, 
         IValidator<Playlist> validator)
     {
+        // Set the playlist ID to the ID from the route param
+        playlist.Id = id;
+        
         var validationResult = await validator.ValidateAsync(playlist);
         if (!validationResult.IsValid)
         {

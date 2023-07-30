@@ -2,13 +2,13 @@
 
 This repository serves as a proof of concept for writing a minimal web application that allows users to create and share playlists of songs.
 
-It is written in .NET Core 7 and follows the minimal API conventions.
+It is written in .NET Core 7 and follows the minimal API conventions, using basic in-memory collection to store data.
 
 ## Dependencies
 
 - [.NET Core 7](https://dotnet.microsoft.com/en-us/download)
-- [FluentValidation](https://github.com/FluentValidation/FluentValidation)
-- [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
+- [FluentValidation](https://github.com/FluentValidation/FluentValidation) - Model validation
+- [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) - Swagger documentation
 
 ## Project Structure
 

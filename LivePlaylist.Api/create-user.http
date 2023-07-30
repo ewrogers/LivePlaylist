@@ -1,0 +1,10 @@
+POST http://localhost:3000/users
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "erik",
+  "displayName": "Erik Rogers"
+}
+
+###

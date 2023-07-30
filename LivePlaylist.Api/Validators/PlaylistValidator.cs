@@ -4,14 +4,15 @@ using LivePlaylist.Api.Models;
 
 namespace LivePlaylist.Api.Validators;
 
-public class UserValidator : AbstractValidator<User>
+public class PlaylistValidator : AbstractValidator<Playlist>
 {
-    public UserValidator()
+    public PlaylistValidator()
     {
-        RuleFor(m => m.Username)
+        RuleFor(m => m.Owner)
             .NotEmpty()
             .Matches("^[a-z0-9]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        RuleFor(m => m.DisplayName).NotEmpty();
+        
+        RuleFor(m => m.Name).NotEmpty();
+        RuleFor(m => m.Description).NotNull();
     }
 }

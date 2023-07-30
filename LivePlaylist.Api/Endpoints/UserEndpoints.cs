@@ -6,6 +6,10 @@ namespace LivePlaylist.Api.Endpoints;
 
 public class UserEndpoints : IEndpoints
 {
+    private const string BaseRoute = "users";
+    private const string ContentType = "application/json";
+    private const string Tag = "Users";
+    
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IUserService, UserService>();
@@ -13,38 +17,56 @@ public class UserEndpoints : IEndpoints
 
     public static void MapEndpoints(IEndpointRouteBuilder app)
     {
-        app.MapGet("users/{username:regex(^[a-zA-Z0-9]+$)}",
-            async (string username, IUserService userService) =>
-            {
-                var user = await userService.GetByNameAsync(username);
-                return user is not null ? Results.Ok(user) : Results.NotFound();
-            }).WithName("GetUser");
-
-        app.MapGet("users",
-            async (IUserService userService) =>
-            {
-                var users = await userService.GetAllAsync();
-                return Results.Ok(users);
-            });
-
-        app.MapPost("users", async (User user, IUserService userService, IValidator<User> validator) =>
-        {
-            var validationResult = await validator.ValidateAsync(user);
-            if (!validationResult.IsValid)
-            {
-                return Results.BadRequest(validationResult.Errors);
-            } 
+        app.MapGet($"{BaseRoute}", GetAllUsers)
+            .WithName(nameof(GetAllUsers))
+            .Produces<IEnumerable<User>>(200, ContentType)
+            .WithTags(Tag);
+        
+        app.MapGet($"{BaseRoute}/{{username:regex(^[a-zA-Z0-9]+$)}}", GetUserByName)
+            .WithName(nameof(GetUserByName))
+            .Produces<User>(200, ContentType)
+            .Produces(404)
+            .WithTags(Tag);
+        
+        app.MapPost($"{BaseRoute}", CreateUser)
+            .WithName(nameof(CreateUser))
+            .Produces<User>(200, ContentType)
+            .Produces(400)
+            .WithTags(Tag);
+    }
     
-            var wasCreated = await userService.CreateAsync(user);
-            if (!wasCreated)
-            {
-                return Results.BadRequest(new
-                {
-                    ErrorMessage = "User with that username already exists"
-                });
-            }
+    private static async Task<IResult> GetAllUsers(IUserService userService)
+    {
+        var users = await userService.GetAllAsync();
+        return Results.Ok(users);
+    }
+    
+    private static async Task<IResult> GetUserByName(string username, IUserService userService)
+    {
+        var user = await userService.GetByNameAsync(username);
+        return user is not null ? Results.Ok(user) : Results.NotFound();
+    }
+    
+    private static async Task<IResult> CreateUser(
+        User user, 
+        IUserService userService, 
+        IValidator<User> validator)
+    {
+        var validationResult = await validator.ValidateAsync(user);
+        if (!validationResult.IsValid)
+        {
+            return Results.BadRequest(validationResult.Errors);
+        }
 
-            return Results.CreatedAtRoute("GetUser", new { user.Username }, user);
-        });
+        var wasCreated = await userService.CreateAsync(user);
+        if (!wasCreated)
+        {
+            return Results.BadRequest(new
+            {
+                ErrorMessage = "User with that username already exists"
+            });
+        }
+
+        return Results.CreatedAtRoute(nameof(GetUserByName), new { user.Username }, user);
     }
 }

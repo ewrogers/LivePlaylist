@@ -4,12 +4,12 @@ namespace LivePlaylist.Api.Services;
 
 public interface IUserService
 {
-    Task<bool> CreateAsync(User user);
+    Task<IEnumerable<User>> GetAllAsync();
     
     Task<User?> GetByNameAsync(string username);
     
-    Task<IEnumerable<User>> GetAllAsync();
-
+    Task<bool> CreateAsync(User user);
+    
     Task<bool> UpdateAsync(User user);
     
     Task<bool> DeleteAsync(string username);

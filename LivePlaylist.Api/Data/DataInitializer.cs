@@ -4,7 +4,7 @@ using LivePlaylist.Api.Services;
 
 namespace LivePlaylist.Api.Data;
 
-public class DataInitializer
+internal class DataInitializer
 {
     private const string SongsFile = "songs.csv";
 
@@ -12,31 +12,45 @@ public class DataInitializer
     private readonly IPlaylistService _playlistService;
     private readonly ISongService _songService;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<Program> _logger;
 
     public DataInitializer(
         IUserService userService,
         IPlaylistService playlistService,
         ISongService songService,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ILogger<Program> logger)
     {
         _userService = userService;
         _playlistService = playlistService;
         _songService = songService;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task InitializeAsync()
     {
+        await InitializeSongs();
+    }
+
+    private async Task InitializeSongs()
+    {
+        _logger.LogInformation("Loading songs from CSV file: {SongsFile}", SongsFile);
         var songRows = await ReadSongsFromCsvFile(SongsFile);
 
+        var seedCount = 0;
         foreach (var song in songRows)
         {
             await _songService.CreateAsync(new Song
             {
                 Artist = song.Artist,
                 Title = song.Title
-            });   
+            });
+
+            seedCount += 1;
         }
+        
+        _logger.LogInformation("Seeded {SeedCount} songs from CSV file: {SongsFile}", seedCount, SongsFile);
     }
 
     // Reads the songs from the CSV file and returns them as tuples (Title, Artist)

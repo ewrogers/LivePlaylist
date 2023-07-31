@@ -1,4 +1,5 @@
 using FluentValidation;
+using LivePlaylist.Api.Data;
 using LivePlaylist.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<DataInitializer>();
+
 var app = builder.Build();
 
 // Mount the Swagger UI at /swagger/index.html
@@ -22,6 +25,8 @@ app.UseSwaggerUI();
 // Map all endpoints in the assembly
 app.UseEndpoints<Program>();
 
-// TODO: Seed in-memory database here
+// Seed initial data
+var dataInitializer = app.Services.GetRequiredService<DataInitializer>();
+await dataInitializer.InitializeAsync();
 
 app.Run();

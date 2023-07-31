@@ -14,7 +14,9 @@ It is written in .NET Core 7 and follows the minimal API conventions, using basi
 
 The project is structured as follows:
 
+- `Data/` - Contains data connections and initialization helpers
 - `Endpoints/` - Contains the API endpoints for the application
+- `Examples/` - Contains examples of accessing the API endpoints
 - `Models/` - Contains the models used by the application
 - `Services/` - Contains the services used by the application
 - `Validators/` - Contains the validators used by the application

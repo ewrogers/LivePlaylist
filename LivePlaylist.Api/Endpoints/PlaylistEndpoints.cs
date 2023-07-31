@@ -57,7 +57,7 @@ public class PlaylistEndpoints : IEndpoints
     private static async Task<IResult> GetPlaylistById(Guid id, IPlaylistService playlistService)
     {
         var playlist = await playlistService.GetByIdAsync(id);
-        return playlist is not null ? Results.Ok(playlist) : Results.NotFound();
+        return playlist is null ? Results.NotFound() : Results.Ok(playlist);
     }
 
     private static async Task<IResult> CreatePlaylist(

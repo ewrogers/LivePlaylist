@@ -44,7 +44,7 @@ public class UserEndpoints : IEndpoints
     private static async Task<IResult> GetUserByName(string username, IUserService userService)
     {
         var user = await userService.GetByNameAsync(username);
-        return user is not null ? Results.Ok(user) : Results.NotFound();
+        return user is null ? Results.NotFound() : Results.Ok(user);
     }
     
     private static async Task<IResult> CreateUser(

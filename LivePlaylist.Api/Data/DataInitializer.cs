@@ -12,7 +12,7 @@ internal class DataInitializer
     private readonly IPlaylistService _playlistService;
     private readonly ISongService _songService;
     private readonly IConfiguration _configuration;
-    private readonly ILogger<Program> _logger;
+    private readonly ILogger _logger;
 
     public DataInitializer(
         IUserService userService,

@@ -1,4 +1,4 @@
-GET http://localhost:3000/playlists/42544706-982d-4b82-b38c-33b609799455
+GET http://localhost:3000/playlists/fb13eab8-3682-4e40-9ba6-62d3847be076
 Accept: application/json
 
 ###

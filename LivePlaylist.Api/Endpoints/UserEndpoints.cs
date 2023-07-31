@@ -1,4 +1,5 @@
 using FluentValidation;
+using LivePlaylist.Api.Filters;
 using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
 
@@ -29,6 +30,7 @@ public class UserEndpoints : IEndpoints
             .WithTags(Tag);
         
         app.MapPost($"{BaseRoute}", CreateUser)
+            .AddEndpointFilter<ValidationFilter<User>>()
             .WithName(nameof(CreateUser))
             .Produces<User>(200, ContentType)
             .Produces(400)
@@ -52,12 +54,6 @@ public class UserEndpoints : IEndpoints
         IUserService userService, 
         IValidator<User> validator)
     {
-        var validationResult = await validator.ValidateAsync(user);
-        if (!validationResult.IsValid)
-        {
-            return Results.BadRequest(validationResult.Errors);
-        }
-
         var wasCreated = await userService.CreateAsync(user);
         if (!wasCreated)
         {

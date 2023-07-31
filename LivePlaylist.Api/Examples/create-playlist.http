@@ -3,7 +3,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "My Playlist",
+  "2name": "My Playlist",
   "owner": "erik"
 }
 

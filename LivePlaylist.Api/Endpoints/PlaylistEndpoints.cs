@@ -1,4 +1,5 @@
 using FluentValidation;
+using LivePlaylist.Api.Filters;
 using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
 
@@ -29,12 +30,14 @@ public class PlaylistEndpoints : IEndpoints
             .WithTags(Tag);
         
         app.MapPost($"{BaseRoute}", CreatePlaylist)
+            .AddEndpointFilter<ValidationFilter<Playlist>>()
             .WithName(nameof(CreatePlaylist))
             .Produces<Playlist>(201, ContentType)
             .Produces(400)
             .WithTags(Tag);
         
         app.MapPut($"{BaseRoute}/{{id:guid}}", UpdatePlaylist)
+            .AddEndpointFilter<ValidationFilter<Playlist>>()
             .WithName(nameof(UpdatePlaylist))
             .Produces<Playlist>(200, ContentType)
             .Produces(400)
@@ -67,12 +70,6 @@ public class PlaylistEndpoints : IEndpoints
     {
         // TODO: assign the current user as the owner of the playlist
 
-        var validationResult = await validator.ValidateAsync(playlist);
-        if (!validationResult.IsValid)
-        {
-            return Results.BadRequest(validationResult.Errors);
-        }
-
         if (!await playlistService.CreateAsync(playlist))
         {
             return Results.BadRequest();
@@ -89,12 +86,6 @@ public class PlaylistEndpoints : IEndpoints
     {
         // Set the playlist ID to the ID from the route param
         playlist.Id = id;
-        
-        var validationResult = await validator.ValidateAsync(playlist);
-        if (!validationResult.IsValid)
-        {
-            return Results.BadRequest(validationResult.Errors);
-        }
         
         var existingPlaylist = await playlistService.GetByIdAsync(playlist.Id);
         if (existingPlaylist is null)

@@ -17,6 +17,7 @@ The project is structured as follows:
 - `Data/` - Contains data connections and initialization helpers
 - `Endpoints/` - Contains the API endpoints for the application
 - `Examples/` - Contains examples of accessing the API endpoints
+- `Filters/` - Contains the filters (middleware) used by endpoints
 - `Models/` - Contains the models used by the application
 - `Services/` - Contains the services used by the application
 - `Validators/` - Contains the validators used by the application
@@ -39,6 +40,12 @@ To run the API, you can use the following command:
 cd LivePlaylist.Api
 dotnet run
 ```
+
+## Seed Data
+
+The API will automatically seed the in-memory data store with some sample data on startup.
+
+This can be modified in the `DataInitializer` class.
 
 ## Swagger Documentation
 

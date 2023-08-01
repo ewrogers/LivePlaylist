@@ -32,6 +32,17 @@ public class PlaylistEntryEndpoints : IEndpoints
             .Produces(404)
             .WithTags(Tag);
         
+        app.MapPost($"{BaseRoute}/move-song", MovePlaylistSong)
+            .RequireAuthorization()
+            .AddEndpointFilter<ValidationFilter<PlaylistEntryMove>>()
+            .WithName(nameof(MovePlaylistSong))
+            .Produces<IEnumerable<PlaylistEntry>>(200, ContentType)
+            .Produces(400)
+            .Produces(401)
+            .Produces(403)
+            .Produces(404)
+            .WithTags(Tag);
+        
         app.MapPost($"{BaseRoute}/remove-songs", RemovePlaylistSongs)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<PlaylistEntryRemove>>()
@@ -86,6 +97,31 @@ public class PlaylistEntryEndpoints : IEndpoints
         else
             await playlistService.AddSongsAsync(playlist, songsToAdd);
         
+        return Results.Ok(playlist.Entries);
+    }
+
+    private static async Task<IResult> MovePlaylistSong(
+        Guid id,
+        PlaylistEntryMove changes,
+        IPlaylistService playlistService,
+        ClaimsPrincipal user)
+    {
+        var username = user.Identity!.Name!;
+        
+        // If the playlist does not exist, return a 404
+        var playlist = await playlistService.GetByIdAsync(id);
+        if (playlist is null)
+        {
+            return Results.NotFound();
+        }
+        
+        // If the current user is not the owner of the playlist, return a 403
+        if (!string.Equals(playlist.Owner, username, StringComparison.OrdinalIgnoreCase))
+        {
+            return Results.Forbid();
+        }
+        
+        await playlistService.MoveSongAsync(playlist, changes.EntryId, changes.Index);
         return Results.Ok(playlist.Entries);
     }
 

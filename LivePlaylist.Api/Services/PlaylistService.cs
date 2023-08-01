@@ -48,6 +48,9 @@ public class PlaylistService : IPlaylistService
 
     public Task InsertSongsAsync(Playlist playlist, int index, IEnumerable<Song> songs)
     {
+        // Ensure the index is within the bounds of the playlist
+        index = Math.Min(index, playlist.Entries.Count);
+        
         var newEntries = songs.Select(s => new PlaylistEntry { Song = s });
         playlist.Entries.InsertRange(index, newEntries);
 
@@ -56,6 +59,21 @@ public class PlaylistService : IPlaylistService
         while (playlist.Entries.Count is > 0 and Playlist.MaxEntries)
             playlist.Entries.RemoveAt(0);
 
+        return Task.CompletedTask;
+    }
+
+    public Task MoveSongAsync(Playlist playlist, Guid entryId, int newIndex)
+    {
+        var entry = playlist.Entries.FirstOrDefault(e => e.EntryId == entryId);
+        if (entry is null)
+            return Task.CompletedTask;
+
+        playlist.Entries.Remove(entry);
+
+        // Ensure the index is within the bounds of the playlist
+        newIndex = Math.Min(newIndex, playlist.Entries.Count);
+        
+        playlist.Entries.Insert(newIndex, entry);
         return Task.CompletedTask;
     }
     

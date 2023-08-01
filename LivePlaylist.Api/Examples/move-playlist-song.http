@@ -1,0 +1,11 @@
+POST http://localhost:3000/playlists/67177d46-c78a-42ea-bb9e-f1f6f1f97f5a/move-song
+Accept: application/json
+Content-Type: application/json
+Authorization: User admin
+
+{
+  "entryId": "9cba4948-b7f9-4511-9c6b-1a25209f8fc4",
+  "index": 0
+}
+
+###

@@ -44,30 +44,30 @@ public class PlaylistService : IPlaylistService
     }
 
     public Task AddSongsAsync(Playlist playlist, IEnumerable<Song> songs)
-        => InsertSongsAsync(playlist, playlist.Songs.Count, songs);
+        => InsertSongsAsync(playlist, playlist.Entries.Count, songs);
 
     public Task InsertSongsAsync(Playlist playlist, int index, IEnumerable<Song> songs)
     {
-        var newEntries = songs.Select(s => new PlaylistSong { Song = s });
-        playlist.Songs.InsertRange(index, newEntries);
+        var newEntries = songs.Select(s => new PlaylistEntry { Song = s });
+        playlist.Entries.InsertRange(index, newEntries);
 
         // Remove songs from the beginning of the playlist if it exceeds the max
         // This makes the playlist act like a FIFO queue
-        while (playlist.Songs.Count is > 0 and Playlist.MaxSongs)
-            playlist.Songs.RemoveAt(0);
+        while (playlist.Entries.Count is > 0 and Playlist.MaxEntries)
+            playlist.Entries.RemoveAt(0);
 
         return Task.CompletedTask;
     }
     
     public Task RemoveSongsAsync(Playlist playlist, IEnumerable<Guid> entryIds)
     {
-        playlist.Songs.RemoveAll(s => entryIds.Contains(s.EntryId));
+        playlist.Entries.RemoveAll(entry => entryIds.Contains(entry.EntryId));
         return Task.CompletedTask;
     }
     
     public Task ClearSongsAsync(Playlist playlist)
     {
-        playlist.Songs.Clear();
+        playlist.Entries.Clear();
         return Task.CompletedTask;
     }
 }

@@ -5,11 +5,11 @@ using LivePlaylist.Api.Services;
 
 namespace LivePlaylist.Api.Endpoints;
 
-public class PlaylistSongEndpoints : IEndpoints
+public class PlaylistEntryEndpoints : IEndpoints
 {
     private const string BaseRoute = "playlists/{id:guid}";
     private const string ContentType = "application/json";
-    private const string Tag = "Playlist Songs";
+    private const string Tag = "Playlist Management";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration) { }
 
@@ -17,15 +17,15 @@ public class PlaylistSongEndpoints : IEndpoints
     {
         app.MapGet($"{BaseRoute}/songs", GetPlaylistSongs)
             .WithName(nameof(GetPlaylistSongs))
-            .Produces<IEnumerable<Song>>(200, ContentType)
+            .Produces<IEnumerable<PlaylistEntry>>(200, ContentType)
             .Produces(404)
             .WithTags(Tag);
 
         app.MapPost($"{BaseRoute}/add-songs", AddOrInsertPlaylistSongs)
             .RequireAuthorization()
-            .AddEndpointFilter<ValidationFilter<PlaylistAddSongs>>()
+            .AddEndpointFilter<ValidationFilter<PlaylistEntryAdd>>()
             .WithName(nameof(AddOrInsertPlaylistSongs))
-            .Produces<IEnumerable<Song>>(200, ContentType)
+            .Produces<IEnumerable<PlaylistEntry>>(200, ContentType)
             .Produces(400)
             .Produces(401)
             .Produces(403)
@@ -34,9 +34,9 @@ public class PlaylistSongEndpoints : IEndpoints
         
         app.MapPost($"{BaseRoute}/remove-songs", RemovePlaylistSongs)
             .RequireAuthorization()
-            .AddEndpointFilter<ValidationFilter<PlaylistRemoveSongs>>()
+            .AddEndpointFilter<ValidationFilter<PlaylistEntryRemove>>()
             .WithName(nameof(RemovePlaylistSongs))
-            .Produces<IEnumerable<Song>>(200, ContentType)
+            .Produces<IEnumerable<PlaylistEntry>>(200, ContentType)
             .Produces(400)
             .Produces(401)
             .Produces(403)
@@ -49,12 +49,12 @@ public class PlaylistSongEndpoints : IEndpoints
         IPlaylistService playlistService)
     {
         var playlist = await playlistService.GetByIdAsync(id);
-        return playlist is null ? Results.NotFound() : Results.Ok(playlist.Songs);
+        return playlist is null ? Results.NotFound() : Results.Ok(playlist.Entries);
     }
 
     private static async Task<IResult> AddOrInsertPlaylistSongs(
         Guid id,
-        PlaylistAddSongs changes,
+        PlaylistEntryAdd changes,
         IPlaylistService playlistService,
         ISongService songService,
         ClaimsPrincipal user)
@@ -75,23 +75,23 @@ public class PlaylistSongEndpoints : IEndpoints
         }
         
         // If the index is null, add the songs to the end of the playlist
-        var startIndex = changes.Index ?? playlist.Songs.Count;
+        var startIndex = changes.Index ?? playlist.Entries.Count;
         
         // Find the songs to add from the song library (if they exist)
         var songsToAdd = await songService.FindAsync(s => changes.SongIds.Contains(s.Id));
 
         // Insert or add the songs to the playlist based on the index
-        if (startIndex < playlist.Songs.Count)
+        if (startIndex < playlist.Entries.Count)
             await playlistService.InsertSongsAsync(playlist, startIndex, songsToAdd);
         else
             await playlistService.AddSongsAsync(playlist, songsToAdd);
         
-        return Results.Ok(playlist.Songs);
+        return Results.Ok(playlist.Entries);
     }
 
     private static async Task<IResult> RemovePlaylistSongs(
         Guid id,
-        PlaylistRemoveSongs changes,
+        PlaylistEntryRemove changes,
         IPlaylistService playlistService,
         ClaimsPrincipal user)
     {
@@ -111,6 +111,6 @@ public class PlaylistSongEndpoints : IEndpoints
         }
 
         await playlistService.RemoveSongsAsync(playlist, changes.EntryIds);
-        return Results.Ok(playlist.Songs);
+        return Results.Ok(playlist.Entries);
     }
 }

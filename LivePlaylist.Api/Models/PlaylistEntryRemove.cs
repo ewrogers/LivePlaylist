@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LivePlaylist.Api.Models;
 
-public class PlaylistRemoveSongs
+public class PlaylistEntryRemove
 {
     [Required]
     public ICollection<Guid> EntryIds { get; set; } = default!;

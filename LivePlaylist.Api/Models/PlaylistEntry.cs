@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace LivePlaylist.Api.Models;
 
-public class PlaylistSong
+public class PlaylistEntry
 {
     public Guid EntryId { get; set; } = Guid.NewGuid();
     

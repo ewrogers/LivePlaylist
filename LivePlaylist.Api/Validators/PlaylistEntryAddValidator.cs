@@ -3,9 +3,9 @@ using LivePlaylist.Api.Models;
 
 namespace LivePlaylist.Api.Validators;
 
-public class PlaylistAddSongsValidator : AbstractValidator<PlaylistAddSongs>
+public class PlaylistEntryAddValidator : AbstractValidator<PlaylistEntryAdd>
 {
-    public PlaylistAddSongsValidator()
+    public PlaylistEntryAddValidator()
     {
         // Song ID collection is required and must not be empty
         RuleFor(m => m.SongIds)

@@ -2,7 +2,7 @@ namespace LivePlaylist.Api.Models;
 
 public class Playlist
 {
-    public const int MaxSongs = 200;
+    public const int MaxEntries = 200;
     
     public Guid Id { get; set; } = Guid.NewGuid();
     
@@ -11,5 +11,5 @@ public class Playlist
     public string Name { get; set; } = default!;
     public string Description { get; set; } = default!;
     
-    public List<PlaylistSong> Songs { get; set; } = new();
+    public List<PlaylistEntry> Entries { get; set; } = new();
 }

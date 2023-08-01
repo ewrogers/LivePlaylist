@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LivePlaylist.Api.Models;
 
-public class PlaylistAddSongs
+public class PlaylistEntryAdd
 {
     public int? Index { get; set; }
     

@@ -9,7 +9,7 @@ public class Playlist
     public string Owner { get; set; } = default!;
     
     public string Name { get; set; } = default!;
-    public string Description { get; set; } = string.Empty;
+    public string Description { get; set; } = default!;
     
     public List<Song> Songs { get; set; } = new();
 }

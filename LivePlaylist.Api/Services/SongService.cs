@@ -17,6 +17,12 @@ public class SongService : ISongService
         var matchingSongs = _songs.Values.Where(predicate).ToList();
         return Task.FromResult(matchingSongs.AsEnumerable());
     }
+    
+    public Task<Song?> FindOneAsync(Func<Song, bool> predicate)
+    {
+        var matchingSong = _songs.Values.FirstOrDefault(predicate);
+        return Task.FromResult(matchingSong);
+    }
 
     public Task<Song?> GetByIdAsync(Guid id)
     {

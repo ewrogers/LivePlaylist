@@ -27,21 +27,24 @@ public class PlaylistEndpoints : IEndpoints
         app.MapGet($"{BaseRoute}/{{id:guid}}", GetPlaylistById)
             .WithName(nameof(GetPlaylistById))
             .Produces<Playlist>(200, ContentType)
+            .Produces(401)
             .Produces(404)
             .WithTags(Tag);
 
         app.MapPost($"{BaseRoute}", CreatePlaylist)
-            .AddEndpointFilter<ValidationFilter<Playlist>>()
+            .AddEndpointFilter<ValidationFilter<PlaylistMetadata>>()
             .WithName(nameof(CreatePlaylist))
             .Produces<Playlist>(201, ContentType)
+            .Produces(401)
             .Produces(400)
             .WithTags(Tag);
         
         app.MapPut($"{BaseRoute}/{{id:guid}}", UpdatePlaylist)
-            .AddEndpointFilter<ValidationFilter<Playlist>>()
+            .AddEndpointFilter<ValidationFilter<PlaylistMetadata>>()
             .WithName(nameof(UpdatePlaylist))
             .Produces<Playlist>(200, ContentType)
             .Produces(400)
+            .Produces(401)
             .Produces(403)
             .Produces(404)
             .WithTags(Tag);
@@ -49,6 +52,7 @@ public class PlaylistEndpoints : IEndpoints
         app.MapDelete($"{BaseRoute}/{{id:guid}}", DeletePlaylist)
             .WithName(nameof(DeletePlaylist))
             .Produces(204)
+            .Produces(401)
             .Produces(403)
             .Produces(404)
             .WithTags(Tag);
@@ -67,14 +71,21 @@ public class PlaylistEndpoints : IEndpoints
     }
 
     private static async Task<IResult> CreatePlaylist(
-        Playlist playlist,
+        PlaylistMetadata fields,
         IPlaylistService playlistService,
         IValidator<Playlist> validator,
         ClaimsPrincipal user)
     {
         var username = user.Identity!.Name!;
-        playlist.Owner = username;
 
+        var playlist = new Playlist
+        {
+            Owner = username,
+            Name = fields.Name,
+            Description = fields.Description ?? string.Empty
+        };
+
+        // If the playlist could not be created, return a 400
         if (!await playlistService.CreateAsync(playlist))
         {
             return Results.BadRequest(new
@@ -88,28 +99,29 @@ public class PlaylistEndpoints : IEndpoints
 
     private static async Task<IResult> UpdatePlaylist(
         Guid id,
-        Playlist playlist, 
+        PlaylistMetadata changes, 
         IPlaylistService playlistService, 
         IValidator<Playlist> validator,
         ClaimsPrincipal user)
     {
         var username = user.Identity!.Name!;
         
-        // Set the playlist ID to the ID from the route param
-        playlist.Id = id;
-        
         // If the playlist does not exist, return a 404
-        var existingPlaylist = await playlistService.GetByIdAsync(playlist.Id);
-        if (existingPlaylist is null)
+        var playlist = await playlistService.GetByIdAsync(id);
+        if (playlist is null)
         {
             return Results.NotFound();
         }
 
         // If the current user is not the owner of the playlist, return a 403
-        if (!string.Equals(existingPlaylist.Owner, username, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(playlist.Owner, username, StringComparison.OrdinalIgnoreCase))
         {
             return Results.Forbid();
         }
+
+        // Update the playlist with the new metadata fields
+        playlist.Name = changes.Name;
+        playlist.Description = changes.Description ?? playlist.Description;
 
         var wasUpdated = await playlistService.UpdateAsync(playlist);
         return wasUpdated ? Results.Ok(playlist) : Results.NotFound();

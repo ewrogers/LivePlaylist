@@ -1,11 +1,12 @@
+using System.ComponentModel.DataAnnotations;
 
 namespace LivePlaylist.Api.Models;
 
-public class Song
+public class SongMetadata
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    
+    [Required]
     public string Artist { get; set; } = default!;
     
+    [Required]
     public string Title { get; set; } = default!;
 }

@@ -3,11 +3,10 @@ using LivePlaylist.Api.Models;
 
 namespace LivePlaylist.Api.Validators;
 
-public class PlaylistValidator : AbstractValidator<Playlist>
+public class PlaylistMetadataValidator : AbstractValidator<Playlist>
 {
-    public PlaylistValidator()
+    public PlaylistMetadataValidator()
     {
         RuleFor(m => m.Name).NotEmpty();
-        RuleFor(m => m.Description).NotNull();
     }
 }

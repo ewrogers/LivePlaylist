@@ -8,6 +8,8 @@ public interface ISongService
     
     Task<IEnumerable<Song>> FindAsync(Func<Song, bool> predicate);
     
+    Task<Song?> FindOneAsync(Func<Song, bool> predicate);
+    
     Task<Song?> GetByIdAsync(Guid id);
     
     Task<bool> CreateAsync(Song song);

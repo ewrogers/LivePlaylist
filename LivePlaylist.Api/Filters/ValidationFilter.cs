@@ -28,10 +28,7 @@ public class ValidationFilter<T> : IEndpointFilter where T : class
             return Results.BadRequest(new
             {
                 // Map these to a more user friendly format (exclude a bunch of unnecessary data)
-                Errors = validationResult.Errors.Select(e => new
-                {
-                    Message = e.ErrorMessage
-                })
+                Errors = validationResult.Errors.Select(e => new { e.ErrorMessage })
             });
         }
 

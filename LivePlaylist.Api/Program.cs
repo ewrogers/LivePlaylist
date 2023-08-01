@@ -2,7 +2,6 @@ using FluentValidation;
 using LivePlaylist.Api.Auth;
 using LivePlaylist.Api.Data;
 using LivePlaylist.Api.Endpoints;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 
@@ -22,11 +21,6 @@ builder.Services.AddAuthentication(ApiKeySchemeConstants.SchemeName)
 builder.Services.AddAuthorization(options =>
 {
     options.InvokeHandlersAfterFailure = false;
-    
-    // Ensures that 401 errors are generated for undefined endpoints (instead of 404)
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
 });
 
 // Enable OpenAPI/Swagger document generation
@@ -37,7 +31,7 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please enter a valid API key",
+        Description = "Please enter a valid API key in the format of 'User {username}'",
         Name = HeaderNames.Authorization,
         Type = SecuritySchemeType.ApiKey,
         BearerFormat = "User {username}",
@@ -50,7 +44,7 @@ builder.Services.AddSwaggerGen(options =>
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference()
+                Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
@@ -79,7 +73,7 @@ app.Use(async (context, next) =>
     // Log differently based on status code, without a bunch of copy-paste if statements
     Action<string?, object?[]> logFn = context.Response.StatusCode switch
     {
-        >= 200 and < 300 => logger.LogInformation,
+        >= 200 and < 400 => logger.LogInformation,
         _ => logger.LogError,
     };
 

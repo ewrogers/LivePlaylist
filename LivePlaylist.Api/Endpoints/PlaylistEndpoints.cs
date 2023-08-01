@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FluentValidation;
 using LivePlaylist.Api.Filters;
 using LivePlaylist.Api.Models;
@@ -41,12 +42,14 @@ public class PlaylistEndpoints : IEndpoints
             .WithName(nameof(UpdatePlaylist))
             .Produces<Playlist>(200, ContentType)
             .Produces(400)
+            .Produces(403)
             .Produces(404)
             .WithTags(Tag);
 
         app.MapDelete($"{BaseRoute}/{{id:guid}}", DeletePlaylist)
             .WithName(nameof(DeletePlaylist))
             .Produces(204)
+            .Produces(403)
             .Produces(404)
             .WithTags(Tag);
     }
@@ -66,13 +69,18 @@ public class PlaylistEndpoints : IEndpoints
     private static async Task<IResult> CreatePlaylist(
         Playlist playlist,
         IPlaylistService playlistService,
-        IValidator<Playlist> validator)
+        IValidator<Playlist> validator,
+        ClaimsPrincipal user)
     {
-        // TODO: assign the current user as the owner of the playlist
+        var username = user.Identity!.Name!;
+        playlist.Owner = username;
 
         if (!await playlistService.CreateAsync(playlist))
         {
-            return Results.BadRequest();
+            return Results.BadRequest(new
+            {
+                ErrorMessage = "Playlist could not be created"
+            });
         }
 
         return Results.CreatedAtRoute(nameof(GetPlaylistById), new { playlist.Id }, playlist);
@@ -82,32 +90,50 @@ public class PlaylistEndpoints : IEndpoints
         Guid id,
         Playlist playlist, 
         IPlaylistService playlistService, 
-        IValidator<Playlist> validator)
+        IValidator<Playlist> validator,
+        ClaimsPrincipal user)
     {
+        var username = user.Identity!.Name!;
+        
         // Set the playlist ID to the ID from the route param
         playlist.Id = id;
         
+        // If the playlist does not exist, return a 404
         var existingPlaylist = await playlistService.GetByIdAsync(playlist.Id);
         if (existingPlaylist is null)
         {
             return Results.NotFound();
         }
 
-        // TODO: Check if the current user is the owner of the playlist
-        
+        // If the current user is not the owner of the playlist, return a 403
+        if (!string.Equals(existingPlaylist.Owner, username, StringComparison.OrdinalIgnoreCase))
+        {
+            return Results.Forbid();
+        }
+
         var wasUpdated = await playlistService.UpdateAsync(playlist);
         return wasUpdated ? Results.Ok(playlist) : Results.NotFound();
     }
 
-    private static async Task<IResult> DeletePlaylist(Guid id, IPlaylistService playlistService)
+    private static async Task<IResult> DeletePlaylist(
+        Guid id,
+        IPlaylistService playlistService,
+        ClaimsPrincipal user)
     {
-        var playlist = await playlistService.GetByIdAsync(id);
-        if (playlist is null)
+        var username = user.Identity!.Name!;
+        
+        // If the playlist does not exist, return a 404
+        var existingPlaylist = await playlistService.GetByIdAsync(id);
+        if (existingPlaylist is null)
         {
             return Results.NotFound();
         }
         
-        // TODO: Check if the current user is the owner of the playlist
+        // If the current user is not the owner of the playlist, return a 403
+        if (!string.Equals(existingPlaylist.Owner, username, StringComparison.OrdinalIgnoreCase))
+        {
+            return Results.Forbid();
+        }
 
         await playlistService.DeleteAsync(id);
         return Results.NoContent();

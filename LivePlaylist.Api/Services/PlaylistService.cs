@@ -42,4 +42,31 @@ public class PlaylistService : IPlaylistService
         var wasRemoved = _playlists.Remove(id);
         return Task.FromResult(wasRemoved);
     }
+
+    public Task AddSongsAsync(Playlist playlist, IEnumerable<Song> songs)
+        => InsertSongsAsync(playlist, playlist.Songs.Count, songs);
+
+    public Task InsertSongsAsync(Playlist playlist, int index, IEnumerable<Song> songs)
+    {
+        playlist.Songs.InsertRange(index, songs);
+
+        // Remove songs from the beginning of the playlist if it exceeds the max
+        // This makes the playlist act like a FIFO queue
+        while (playlist.Songs.Count is > 0 and Playlist.MaxSongs)
+            playlist.Songs.RemoveAt(0);
+
+        return Task.CompletedTask;
+    }
+    
+    public Task RemoveSongsAsync(Playlist playlist, IEnumerable<Guid> songIds)
+    {
+        playlist.Songs.RemoveAll(song => songIds.Contains(song.Id));
+        return Task.CompletedTask;
+    }
+    
+    public Task ClearSongsAsync(Playlist playlist)
+    {
+        playlist.Songs.Clear();
+        return Task.CompletedTask;
+    }
 }

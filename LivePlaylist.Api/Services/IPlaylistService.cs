@@ -13,4 +13,12 @@ public interface IPlaylistService
     Task<bool> UpdateAsync(Playlist playlist);
     
     Task<bool> DeleteAsync(Guid id);
+
+    Task AddSongsAsync(Playlist playlist, IEnumerable<Song> songs);
+    
+    Task InsertSongsAsync(Playlist playlist, int index, IEnumerable<Song> songs);
+    
+    Task RemoveSongsAsync(Playlist playlist, IEnumerable<Guid> songIds);
+    
+    Task ClearSongsAsync(Playlist playlist);
 }

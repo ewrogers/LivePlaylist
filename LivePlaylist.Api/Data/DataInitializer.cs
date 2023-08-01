@@ -11,26 +11,36 @@ internal class DataInitializer
     private readonly IUserService _userService;
     private readonly IPlaylistService _playlistService;
     private readonly ISongService _songService;
-    private readonly IConfiguration _configuration;
     private readonly ILogger _logger;
 
     public DataInitializer(
         IUserService userService,
         IPlaylistService playlistService,
         ISongService songService,
-        IConfiguration configuration,
         ILogger<Program> logger)
     {
         _userService = userService;
         _playlistService = playlistService;
         _songService = songService;
-        _configuration = configuration;
         _logger = logger;
     }
 
     public async Task InitializeAsync()
-    {
+    {await InitializeUsers();
         await InitializeSongs();
+    }
+
+    private async Task InitializeUsers()
+    {
+        var adminUser = new User
+        {
+            Username = "admin",
+            DisplayName = "Administrator"
+        };
+
+        await _userService.CreateAsync(adminUser);
+        
+        _logger.LogInformation("Created default user: {Username}", adminUser.Username);
     }
 
     private async Task InitializeSongs()

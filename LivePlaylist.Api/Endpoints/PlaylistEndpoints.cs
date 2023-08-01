@@ -22,13 +22,13 @@ public class PlaylistEndpoints : IEndpoints
             .WithName(nameof(GetAllPlaylists))
             .Produces<IEnumerable<Playlist>>(200, ContentType)
             .WithTags(Tag);
-        
+
         app.MapGet($"{BaseRoute}/{{id:guid}}", GetPlaylistById)
             .WithName(nameof(GetPlaylistById))
             .Produces<Playlist>(200, ContentType)
             .Produces(404)
             .WithTags(Tag);
-        
+
         app.MapPost($"{BaseRoute}", CreatePlaylist)
             .AddEndpointFilter<ValidationFilter<Playlist>>()
             .WithName(nameof(CreatePlaylist))

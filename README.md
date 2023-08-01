@@ -41,7 +41,7 @@ dotnet run
 
 The API documentation is automatically generated using Swagger.
 
-You can access the documentation by running the API and navigating to [http://localhost:5000/swagger/index.html](http://localhost:5000/swagger/index.html).
+You can access the documentation by running the API and navigating to [http://localhost:3000/swagger/index.html](http://localhost:3000/swagger/index.html).
 
 ## Authentication
 

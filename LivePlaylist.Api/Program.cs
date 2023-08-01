@@ -40,7 +40,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Please enter a valid API key",
         Name = HeaderNames.Authorization,
         Type = SecuritySchemeType.ApiKey,
-        BearerFormat = "User: {username}",
+        BearerFormat = "User {username}",
         Scheme = "Bearer"
     });
 
@@ -68,6 +68,29 @@ var app = builder.Build();
 // Enable swagger UI, viewable at https://localhost:5001/swagger/index.html
 app.UseSwagger();
 app.UseSwaggerUI();
+
+// Basic logging middleware that logs all requests to console and debug output
+app.Use(async (context, next) =>
+{
+    await next();
+
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+    // Log differently based on status code, without a bunch of copy-paste if statements
+    Action<string?, object?[]> logFn = context.Response.StatusCode switch
+    {
+        >= 200 and < 300 => logger.LogInformation,
+        _ => logger.LogError,
+    };
+
+    logFn.Invoke("{Method} {Path} {StatusCode}",
+        new object[]
+        {
+            context.Request.Method,
+            context.Request.Path,
+            context.Response.StatusCode
+        });
+});
 
 // Enable authorization for all endpoints below (intentionally after Swagger UI)
 app.UseAuthentication();

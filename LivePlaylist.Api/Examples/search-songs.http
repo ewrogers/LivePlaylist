@@ -1,4 +1,5 @@
 GET http://localhost:3000/songs?searchTerm=black
 Accept: application/json
+Authorization: User admin
 
 ###

@@ -1,6 +1,7 @@
 POST http://localhost:3000/playlists/1266aefd-1e6f-4d2e-8b6e-d4703cea3fd1/songs/add
 Accept: application/json
 Content-Type: application/json
+Authorization: User admin
 
 [
   "9cba4948-b7f9-4511-9c6b-1a25209f8fc4"

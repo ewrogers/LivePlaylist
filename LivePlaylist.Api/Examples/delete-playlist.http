@@ -1,4 +1,5 @@
 DELETE http://localhost:3000/playlists/42544706-982d-4b82-b38c-33b609799455
 Accept: application/json
+Authorization: User admin
 
 ###

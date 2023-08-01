@@ -18,7 +18,7 @@ public interface IPlaylistService
     
     Task InsertSongsAsync(Playlist playlist, int index, IEnumerable<Song> songs);
     
-    Task RemoveSongsAsync(Playlist playlist, IEnumerable<Guid> songIds);
+    Task RemoveSongsAsync(Playlist playlist, IEnumerable<Guid> entryIds);
     
     Task ClearSongsAsync(Playlist playlist);
 }

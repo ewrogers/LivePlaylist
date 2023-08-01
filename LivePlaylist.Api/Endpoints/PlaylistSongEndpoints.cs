@@ -2,7 +2,6 @@ using System.Security.Claims;
 using LivePlaylist.Api.Filters;
 using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LivePlaylist.Api.Endpoints;
 
@@ -22,10 +21,21 @@ public class PlaylistSongEndpoints : IEndpoints
             .Produces(404)
             .WithTags(Tag);
 
-        app.MapPost($"{BaseRoute}/songs", ApplyPlaylistChanges)
+        app.MapPost($"{BaseRoute}/add-songs", AddOrInsertPlaylistSongs)
             .RequireAuthorization()
-            .AddEndpointFilter<ValidationFilter<PlaylistChanges>>()
-            .WithName(nameof(ApplyPlaylistChanges))
+            .AddEndpointFilter<ValidationFilter<PlaylistAddSongs>>()
+            .WithName(nameof(AddOrInsertPlaylistSongs))
+            .Produces<IEnumerable<Song>>(200, ContentType)
+            .Produces(400)
+            .Produces(401)
+            .Produces(403)
+            .Produces(404)
+            .WithTags(Tag);
+        
+        app.MapPost($"{BaseRoute}/remove-songs", RemovePlaylistSongs)
+            .RequireAuthorization()
+            .AddEndpointFilter<ValidationFilter<PlaylistRemoveSongs>>()
+            .WithName(nameof(RemovePlaylistSongs))
             .Produces<IEnumerable<Song>>(200, ContentType)
             .Produces(400)
             .Produces(401)
@@ -42,9 +52,9 @@ public class PlaylistSongEndpoints : IEndpoints
         return playlist is null ? Results.NotFound() : Results.Ok(playlist.Songs);
     }
 
-    private static async Task<IResult> ApplyPlaylistChanges(
+    private static async Task<IResult> AddOrInsertPlaylistSongs(
         Guid id,
-        PlaylistChanges changes,
+        PlaylistAddSongs changes,
         IPlaylistService playlistService,
         ISongService songService,
         ClaimsPrincipal user)
@@ -63,40 +73,44 @@ public class PlaylistSongEndpoints : IEndpoints
         {
             return Results.Forbid();
         }
+        
+        // If the index is null, add the songs to the end of the playlist
+        var startIndex = changes.Index ?? playlist.Songs.Count;
+        
+        // Find the songs to add from the song library (if they exist)
+        var songsToAdd = await songService.FindAsync(s => changes.SongIds.Contains(s.Id));
 
-        // Perform different mutations based on the change action
-        switch (changes.Action)
+        // Insert or add the songs to the playlist based on the index
+        if (startIndex < playlist.Songs.Count)
+            await playlistService.InsertSongsAsync(playlist, startIndex, songsToAdd);
+        else
+            await playlistService.AddSongsAsync(playlist, songsToAdd);
+        
+        return Results.Ok(playlist.Songs);
+    }
+
+    private static async Task<IResult> RemovePlaylistSongs(
+        Guid id,
+        PlaylistRemoveSongs changes,
+        IPlaylistService playlistService,
+        ClaimsPrincipal user)
+    {
+        var username = user.Identity!.Name!;
+        
+        // If the playlist does not exist, return a 404
+        var playlist = await playlistService.GetByIdAsync(id);
+        if (playlist is null)
         {
-            case PlaylistChangeType.Add:
-                // If the index is null, add the songs to the end of the playlist
-                var startIndex = changes.Index ?? playlist.Songs.Count;
-                
-                // Find the songs to add from the song library (if they exist)
-                var songsToAdd = await songService.FindAsync(s => changes.SongIds.Contains(s.Id));
-
-                // Insert or add the songs to the playlist based on the index
-                if (startIndex < playlist.Songs.Count)
-                    await playlistService.InsertSongsAsync(playlist, startIndex, songsToAdd);
-                else
-                    await playlistService.AddSongsAsync(playlist, songsToAdd);
-
-                break;
-            
-            case PlaylistChangeType.Remove:
-                await playlistService.RemoveSongsAsync(playlist, changes.SongIds);
-                break;
-            
-            case PlaylistChangeType.Clear:
-                await playlistService.ClearSongsAsync(playlist);
-                break;
-            
-            default:
-                return Results.BadRequest(new
-                {
-                    ErrorMessage = "Unsupported change action"
-                });
+            return Results.NotFound();
+        }
+        
+        // If the current user is not the owner of the playlist, return a 403
+        if (!string.Equals(playlist.Owner, username, StringComparison.OrdinalIgnoreCase))
+        {
+            return Results.Forbid();
         }
 
+        await playlistService.RemoveSongsAsync(playlist, changes.EntryIds);
         return Results.Ok(playlist.Songs);
     }
 }

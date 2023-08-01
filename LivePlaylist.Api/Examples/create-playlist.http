@@ -1,7 +1,7 @@
 POST http://localhost:3000/playlists
 Accept: application/json
 Content-Type: application/json
-#Authorization: User admin
+Authorization: User admin
 
 {
   "name": "My Playlist"

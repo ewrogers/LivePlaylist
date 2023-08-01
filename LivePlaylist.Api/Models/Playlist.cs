@@ -11,5 +11,5 @@ public class Playlist
     public string Name { get; set; } = default!;
     public string Description { get; set; } = default!;
     
-    public List<Song> Songs { get; set; } = new();
+    public List<PlaylistSong> Songs { get; set; } = new();
 }

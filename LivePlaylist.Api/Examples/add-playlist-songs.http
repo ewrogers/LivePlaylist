@@ -1,12 +1,11 @@
-POST http://localhost:3000/playlists/1266aefd-1e6f-4d2e-8b6e-d4703cea3fd1/songs
+POST http://localhost:3000/playlists/67177d46-c78a-42ea-bb9e-f1f6f1f97f5a/add
 Accept: application/json
 Content-Type: application/json
 Authorization: User admin
 
 {
-  "action": "add",
   "songIds": [
-    "9cba4948-b7f9-4511-9c6b-1a25209f8fc4"
+    "03637ff1-03f6-4d2b-97ea-f814e94ddcf9"
   ]
 }
 

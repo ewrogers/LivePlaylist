@@ -2,19 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LivePlaylist.Api.Models;
 
-public enum PlaylistChangeType
+public class PlaylistAddSongs
 {
-    Add,
-    Remove,
-    Clear
-}
-
-public class PlaylistChanges
-{
-    [Required]
-    public PlaylistChangeType Action { get; set; }
-    
     public int? Index { get; set; }
     
+    [Required]
     public ICollection<Guid> SongIds { get; set; } = default!;
 }

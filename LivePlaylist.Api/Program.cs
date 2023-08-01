@@ -48,8 +48,6 @@ builder.Services.AddSwaggerGen(options =>
             Array.Empty<string>()
         }
     });
-    
-    options.UseInlineDefinitionsForEnums();
 });
 
 builder.Services.AddSingleton<DataInitializer>();

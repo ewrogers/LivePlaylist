@@ -1,4 +1,4 @@
-POST http://localhost:3000/playlists/1266aefd-1e6f-4d2e-8b6e-d4703cea3fd1/songs
+POST http://localhost:3000/playlists/1266aefd-1e6f-4d2e-8b6e-d4703cea3fd1/add
 Accept: application/json
 Content-Type: application/json
 Authorization: User admin

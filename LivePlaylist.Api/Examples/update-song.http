@@ -1,0 +1,11 @@
+PUT http://localhost:3000/songs/1
+Accept: application/json
+Content-Type: application/json
+Authorization: User admin
+
+{
+  "artist": "Rick Astley",
+  "title": "Never Gonna Give You Up"
+}
+
+###

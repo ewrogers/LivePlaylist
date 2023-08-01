@@ -37,6 +37,15 @@ public class SongEndpoints : IEndpoints
             .Produces(400)
             .Produces(401)
             .WithTags(Tag);
+        
+        app.MapPut($"{BaseRoute}/{{id:guid}}", UpdateSong)
+            .AddEndpointFilter<ValidationFilter<SongMetadata>>()
+            .WithName(nameof(UpdateSong))
+            .Produces<Song>(200, ContentType)
+            .Produces(400)
+            .Produces(401)
+            .Produces(404)
+            .WithTags(Tag);
     }
 
     private static async Task<IResult> SearchSongs(string? searchTerm, ISongService songService)
@@ -81,5 +90,37 @@ public class SongEndpoints : IEndpoints
         
         await songService.CreateAsync(song);
         return Results.CreatedAtRoute(nameof(GetSongById), new { song.Id }, song);
+    }
+    
+    private static async Task<IResult> UpdateSong(
+        Guid id, 
+        ISongService songService,
+        SongMetadata changes)
+    {
+        var existingSong = await songService.GetByIdAsync(id);
+        if (existingSong is null)
+        {
+            return Results.NotFound();
+        }
+
+        var songConflict = await songService.FindOneAsync(s =>
+            s.Artist.Equals(changes.Artist, StringComparison.OrdinalIgnoreCase) &&
+            s.Title.Equals(changes.Title, StringComparison.OrdinalIgnoreCase));
+
+        // If a song with the same artist and title already exists, return a 400
+        if (songConflict is not null)
+        {
+            return Results.BadRequest(new
+            {
+                ErrorMessage = "A song with this artist and title already exists"
+            });
+        }
+        
+        // Update the song with the new artist and title
+        existingSong.Artist = changes.Artist;
+        existingSong.Title = changes.Title;
+        
+        await songService.UpdateAsync(existingSong);
+        return Results.Ok(existingSong);
     }
 }

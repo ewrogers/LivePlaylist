@@ -42,6 +42,7 @@ public class PlaylistEndpoints : IEndpoints
         app.MapPut($"{BaseRoute}/{{id:guid}}", UpdatePlaylist)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<PlaylistMetadata>>()
+            .AddEndpointFilter<PlaylistOwnerFilter>()
             .WithName(nameof(UpdatePlaylist))
             .Produces<Playlist>(200, ContentType)
             .Produces(400)
@@ -52,6 +53,7 @@ public class PlaylistEndpoints : IEndpoints
 
         app.MapDelete($"{BaseRoute}/{{id:guid}}", DeletePlaylist)
             .RequireAuthorization()
+            .AddEndpointFilter<PlaylistOwnerFilter>()
             .WithName(nameof(DeletePlaylist))
             .Produces(204)
             .Produces(401)
@@ -77,8 +79,13 @@ public class PlaylistEndpoints : IEndpoints
         IPlaylistService playlistService,
         ClaimsPrincipal user)
     {
-        var username = user.Identity!.Name!;
-
+        // If the user is not authenticated, return a 401
+        var username = user.Identity?.Name;
+        if (username is null)
+        {
+            return Results.Unauthorized();
+        }
+        
         var playlist = new Playlist
         {
             Owner = username,
@@ -100,26 +107,14 @@ public class PlaylistEndpoints : IEndpoints
 
     private static async Task<IResult> UpdatePlaylist(
         Guid id,
-        PlaylistMetadata changes, 
-        IPlaylistService playlistService,
-        ClaimsPrincipal user)
+        PlaylistMetadata changes,
+        IPlaylistService playlistService)
     {
-        var username = user.Identity!.Name!;
-        
         // If the playlist does not exist, return a 404
         var playlist = await playlistService.GetByIdAsync(id);
         if (playlist is null)
-        {
             return Results.NotFound();
-        }
-
-        // If the current user is not the owner of the playlist, return a 403
-        if (!string.Equals(playlist.Owner, username, StringComparison.OrdinalIgnoreCase))
-        {
-            return Results.Forbid();
-        }
-
-        // Update the playlist with the new metadata fields
+        
         playlist.Name = changes.Name;
         playlist.Description = changes.Description ?? playlist.Description;
 
@@ -129,24 +124,8 @@ public class PlaylistEndpoints : IEndpoints
 
     private static async Task<IResult> DeletePlaylist(
         Guid id,
-        IPlaylistService playlistService,
-        ClaimsPrincipal user)
+        IPlaylistService playlistService)
     {
-        var username = user.Identity!.Name!;
-        
-        // If the playlist does not exist, return a 404
-        var existingPlaylist = await playlistService.GetByIdAsync(id);
-        if (existingPlaylist is null)
-        {
-            return Results.NotFound();
-        }
-        
-        // If the current user is not the owner of the playlist, return a 403
-        if (!string.Equals(existingPlaylist.Owner, username, StringComparison.OrdinalIgnoreCase))
-        {
-            return Results.Forbid();
-        }
-
         await playlistService.DeleteAsync(id);
         return Results.NoContent();
     }

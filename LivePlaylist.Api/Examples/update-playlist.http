@@ -1,4 +1,4 @@
-PUT http://localhost:3000/playlists/622090bf-f663-42ce-b052-ed92eafc75dd
+PUT http://localhost:3000/playlists/68e92d75-b546-4625-8726-2bb331db1696
 Accept: application/json
 Content-Type: application/json
 Authorization: User admin

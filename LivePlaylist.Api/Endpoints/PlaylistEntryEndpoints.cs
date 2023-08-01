@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using LivePlaylist.Api.Filters;
 using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
@@ -24,6 +23,7 @@ public class PlaylistEntryEndpoints : IEndpoints
         app.MapPost($"{BaseRoute}/add-songs", AddOrInsertPlaylistSongs)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<PlaylistEntryAdd>>()
+            .AddEndpointFilter<PlaylistOwnerFilter>()
             .WithName(nameof(AddOrInsertPlaylistSongs))
             .Produces<IEnumerable<PlaylistEntry>>(200, ContentType)
             .Produces(400)
@@ -35,6 +35,7 @@ public class PlaylistEntryEndpoints : IEndpoints
         app.MapPost($"{BaseRoute}/move-song", MovePlaylistSong)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<PlaylistEntryMove>>()
+            .AddEndpointFilter<PlaylistOwnerFilter>()
             .WithName(nameof(MovePlaylistSong))
             .Produces<IEnumerable<PlaylistEntry>>(200, ContentType)
             .Produces(400)
@@ -46,6 +47,7 @@ public class PlaylistEntryEndpoints : IEndpoints
         app.MapPost($"{BaseRoute}/remove-songs", RemovePlaylistSongs)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<PlaylistEntryRemove>>()
+            .AddEndpointFilter<PlaylistOwnerFilter>()
             .WithName(nameof(RemovePlaylistSongs))
             .Produces<IEnumerable<PlaylistEntry>>(200, ContentType)
             .Produces(400)
@@ -67,23 +69,12 @@ public class PlaylistEntryEndpoints : IEndpoints
         Guid id,
         PlaylistEntryAdd changes,
         IPlaylistService playlistService,
-        ISongService songService,
-        ClaimsPrincipal user)
+        ISongService songService)
     {
-        var username = user.Identity!.Name!;
-        
         // If the playlist does not exist, return a 404
         var playlist = await playlistService.GetByIdAsync(id);
         if (playlist is null)
-        {
             return Results.NotFound();
-        }
-        
-        // If the current user is not the owner of the playlist, return a 403
-        if (!string.Equals(playlist.Owner, username, StringComparison.OrdinalIgnoreCase))
-        {
-            return Results.Forbid();
-        }
         
         // If the index is null, add the songs to the end of the playlist
         var startIndex = changes.Index ?? playlist.Entries.Count;
@@ -103,23 +94,12 @@ public class PlaylistEntryEndpoints : IEndpoints
     private static async Task<IResult> MovePlaylistSong(
         Guid id,
         PlaylistEntryMove changes,
-        IPlaylistService playlistService,
-        ClaimsPrincipal user)
+        IPlaylistService playlistService)
     {
-        var username = user.Identity!.Name!;
-        
         // If the playlist does not exist, return a 404
         var playlist = await playlistService.GetByIdAsync(id);
         if (playlist is null)
-        {
             return Results.NotFound();
-        }
-        
-        // If the current user is not the owner of the playlist, return a 403
-        if (!string.Equals(playlist.Owner, username, StringComparison.OrdinalIgnoreCase))
-        {
-            return Results.Forbid();
-        }
         
         await playlistService.MoveSongAsync(playlist, changes.EntryId, changes.Index);
         return Results.Ok(playlist.Entries);
@@ -128,24 +108,13 @@ public class PlaylistEntryEndpoints : IEndpoints
     private static async Task<IResult> RemovePlaylistSongs(
         Guid id,
         PlaylistEntryRemove changes,
-        IPlaylistService playlistService,
-        ClaimsPrincipal user)
+        IPlaylistService playlistService)
     {
-        var username = user.Identity!.Name!;
-        
         // If the playlist does not exist, return a 404
         var playlist = await playlistService.GetByIdAsync(id);
         if (playlist is null)
-        {
             return Results.NotFound();
-        }
         
-        // If the current user is not the owner of the playlist, return a 403
-        if (!string.Equals(playlist.Owner, username, StringComparison.OrdinalIgnoreCase))
-        {
-            return Results.Forbid();
-        }
-
         await playlistService.RemoveSongsAsync(playlist, changes.EntryIds);
         return Results.Ok(playlist.Entries);
     }

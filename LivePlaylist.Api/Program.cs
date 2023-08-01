@@ -58,10 +58,6 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Enable authorization for all endpoints below
-app.UseAuthentication();
-app.UseAuthorization();
-
 // Basic logging middleware that logs all requests to console and debug output
 app.Use(async (context, next) =>
 {
@@ -84,6 +80,10 @@ app.Use(async (context, next) =>
             context.Response.StatusCode
         });
 });
+
+// Enable authorization for all endpoints below
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Map all endpoints in the assembly
 app.MapEndpoints<Program>();

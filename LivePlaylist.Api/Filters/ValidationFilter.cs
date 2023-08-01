@@ -16,7 +16,7 @@ public class ValidationFilter<T> : IEndpointFilter where T : class
         EndpointFilterDelegate next)
     {
         // Attempt to find a validatable object of type T in the arguments
-        if (context.Arguments.SingleOrDefault(x => x?.GetType() == typeof(T)) is not T validatable)
+        if (context.Arguments.SingleOrDefault(arg => arg?.GetType() == typeof(T)) is not T validatable)
         {
             return Results.BadRequest();
         }

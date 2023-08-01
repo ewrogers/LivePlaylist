@@ -3,7 +3,7 @@ using LivePlaylist.Api.Models;
 
 namespace LivePlaylist.Api.Validators;
 
-public class PlaylistMetadataValidator : AbstractValidator<Playlist>
+public class PlaylistMetadataValidator : AbstractValidator<PlaylistMetadata>
 {
     public PlaylistMetadataValidator()
     {

@@ -1,5 +1,4 @@
 GET http://localhost:3000/users/erik
 Accept: application/json
-Authorization: User admin
 
 ###

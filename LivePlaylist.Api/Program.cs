@@ -16,12 +16,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 // Add authentication scheme (API key)
 builder.Services.AddAuthentication(ApiKeySchemeConstants.SchemeName)
     .AddScheme<ApiKeyAuthSchemeOptions, ApiKeyAuthHandler>(ApiKeySchemeConstants.SchemeName, _ => { });
-
-// Add authorization policy (requires authentication for all endpoints behind auth)
-builder.Services.AddAuthorization(options =>
-{
-    options.InvokeHandlersAfterFailure = false;
-});
+builder.Services.AddAuthorization();
 
 // Enable OpenAPI/Swagger document generation
 builder.Services.AddEndpointsApiExplorer();
@@ -53,6 +48,8 @@ builder.Services.AddSwaggerGen(options =>
             Array.Empty<string>()
         }
     });
+    
+    options.UseInlineDefinitionsForEnums();
 });
 
 builder.Services.AddSingleton<DataInitializer>();
@@ -63,35 +60,35 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Basic logging middleware that logs all requests to console and debug output
-app.Use(async (context, next) =>
-{
-    await next();
-
-    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-
-    // Log differently based on status code, without a bunch of copy-paste if statements
-    Action<string?, object?[]> logFn = context.Response.StatusCode switch
-    {
-        >= 200 and < 400 => logger.LogInformation,
-        _ => logger.LogError,
-    };
-
-    logFn.Invoke("{Method} {Path} {StatusCode}",
-        new object[]
-        {
-            context.Request.Method,
-            context.Request.Path,
-            context.Response.StatusCode
-        });
-});
-
 // Enable authorization for all endpoints below (intentionally after Swagger UI)
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Basic logging middleware that logs all requests to console and debug output
+// app.Use(async (context, next) =>
+// {
+//     await next();
+//
+//     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+//
+//     // Log differently based on status code, without a bunch of copy-paste if statements
+//     Action<string?, object?[]> logFn = context.Response.StatusCode switch
+//     {
+//         >= 200 and < 400 => logger.LogInformation,
+//         _ => logger.LogError,
+//     };
+//
+//     logFn.Invoke("{Method} {Path} {StatusCode}",
+//         new object[]
+//         {
+//             context.Request.Method,
+//             context.Request.Path,
+//             context.Response.StatusCode
+//         });
+// });
+
 // Map all endpoints in the assembly
-app.UseEndpoints<Program>();
+app.MapEndpoints<Program>();
 
 // Seed initial data
 var dataInitializer = app.Services.GetRequiredService<DataInitializer>();

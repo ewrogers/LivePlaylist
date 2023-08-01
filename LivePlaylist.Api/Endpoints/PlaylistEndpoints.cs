@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using FluentValidation;
 using LivePlaylist.Api.Filters;
 using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
@@ -32,6 +31,7 @@ public class PlaylistEndpoints : IEndpoints
             .WithTags(Tag);
 
         app.MapPost($"{BaseRoute}", CreatePlaylist)
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<PlaylistMetadata>>()
             .WithName(nameof(CreatePlaylist))
             .Produces<Playlist>(201, ContentType)
@@ -40,6 +40,7 @@ public class PlaylistEndpoints : IEndpoints
             .WithTags(Tag);
         
         app.MapPut($"{BaseRoute}/{{id:guid}}", UpdatePlaylist)
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<PlaylistMetadata>>()
             .WithName(nameof(UpdatePlaylist))
             .Produces<Playlist>(200, ContentType)
@@ -50,6 +51,7 @@ public class PlaylistEndpoints : IEndpoints
             .WithTags(Tag);
 
         app.MapDelete($"{BaseRoute}/{{id:guid}}", DeletePlaylist)
+            .RequireAuthorization()
             .WithName(nameof(DeletePlaylist))
             .Produces(204)
             .Produces(401)
@@ -73,7 +75,6 @@ public class PlaylistEndpoints : IEndpoints
     private static async Task<IResult> CreatePlaylist(
         PlaylistMetadata fields,
         IPlaylistService playlistService,
-        IValidator<Playlist> validator,
         ClaimsPrincipal user)
     {
         var username = user.Identity!.Name!;
@@ -100,8 +101,7 @@ public class PlaylistEndpoints : IEndpoints
     private static async Task<IResult> UpdatePlaylist(
         Guid id,
         PlaylistMetadata changes, 
-        IPlaylistService playlistService, 
-        IValidator<Playlist> validator,
+        IPlaylistService playlistService,
         ClaimsPrincipal user)
     {
         var username = user.Identity!.Name!;

@@ -1,7 +1,6 @@
 POST http://localhost:3000/songs
 Accept: application/json
 Content-Type: application/json
-Authorization: User admin
 
 {
   "artist": "Rick Astley",

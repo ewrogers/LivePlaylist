@@ -16,10 +16,10 @@ public static class EndpointsExtensions
         }
     }
 
-    public static void UseEndpoints<T>(this IApplicationBuilder app)
-        => UseEndpoints(app, typeof(T));
+    public static void MapEndpoints<T>(this IApplicationBuilder app)
+        => MapEndpoints(app, typeof(T));
 
-    public static void UseEndpoints(this IApplicationBuilder app, Type type)
+    public static void MapEndpoints(this IApplicationBuilder app, Type type)
     {
         var endpointTypes = GetEndpointTypesFromAssemblyContaining(type);
 

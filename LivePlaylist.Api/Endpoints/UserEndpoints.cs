@@ -21,13 +21,11 @@ public class UserEndpoints : IEndpoints
         app.MapGet($"{BaseRoute}", GetAllUsers)
             .WithName(nameof(GetAllUsers))
             .Produces<IEnumerable<User>>(200, ContentType)
-            .Produces(401)
             .WithTags(Tag);
         
         app.MapGet($"{BaseRoute}/{{username:regex(^[a-zA-Z0-9]+$)}}", GetUserByName)
             .WithName(nameof(GetUserByName))
             .Produces<User>(200, ContentType)
-            .Produces(401)
             .Produces(404)
             .WithTags(Tag);
         
@@ -35,7 +33,6 @@ public class UserEndpoints : IEndpoints
             .AddEndpointFilter<ValidationFilter<User>>()
             .WithName(nameof(CreateUser))
             .Produces<User>(200, ContentType)
-            .Produces(401)
             .Produces(400)
             .WithTags(Tag);
     }

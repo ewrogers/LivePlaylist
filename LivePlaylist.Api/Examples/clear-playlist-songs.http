@@ -4,10 +4,7 @@ Content-Type: application/json
 Authorization: User admin
 
 {
-  "action": "add",
-  "songIds": [
-    "9cba4948-b7f9-4511-9c6b-1a25209f8fc4"
-  ]
+  "action": "clear"
 }
 
 ###

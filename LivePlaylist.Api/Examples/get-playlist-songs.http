@@ -1,5 +1,4 @@
 GET http://localhost:3000/playlists/d7c3502d-5ec1-4357-9f01-76e1d2e732d6/songs
 Accept: application/json
-Authorization: User admin
 
 ###

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using LivePlaylist.Api.Filters;
 using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LivePlaylist.Api.Endpoints;
 
@@ -19,10 +20,10 @@ public class PlaylistSongEndpoints : IEndpoints
             .WithName(nameof(GetPlaylistSongs))
             .Produces<IEnumerable<Song>>(200, ContentType)
             .Produces(404)
-            .Produces(401)
             .WithTags(Tag);
 
         app.MapPost($"{BaseRoute}/songs", ApplyPlaylistChanges)
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<PlaylistChanges>>()
             .WithName(nameof(ApplyPlaylistChanges))
             .Produces<IEnumerable<Song>>(200, ContentType)
@@ -35,7 +36,6 @@ public class PlaylistSongEndpoints : IEndpoints
 
     private static async Task<IResult> GetPlaylistSongs(
         Guid id,
-        PlaylistChanges changes,
         IPlaylistService playlistService)
     {
         var playlist = await playlistService.GetByIdAsync(id);
@@ -97,7 +97,6 @@ public class PlaylistSongEndpoints : IEndpoints
                 });
         }
 
-        await playlistService.UpdateAsync(playlist);
         return Results.Ok(playlist.Songs);
     }
 }

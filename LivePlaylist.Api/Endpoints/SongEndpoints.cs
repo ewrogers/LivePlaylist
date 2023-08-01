@@ -20,13 +20,11 @@ public class SongEndpoints : IEndpoints
         app.MapGet($"{BaseRoute}", SearchSongs)
             .WithName(nameof(SearchSongs))
             .Produces<IEnumerable<Song>>(200, ContentType)
-            .Produces(401)
             .WithTags(Tag);
         
         app.MapGet($"{BaseRoute}/{{id:guid}}", GetSongById)
             .WithName(nameof(GetSongById))
             .Produces<Song>(200, ContentType)
-            .Produces(401)
             .Produces(404)
             .WithTags(Tag);
         
@@ -35,7 +33,6 @@ public class SongEndpoints : IEndpoints
             .WithName(nameof(CreateSong))
             .Produces<Song>(201, ContentType)
             .Produces(400)
-            .Produces(401)
             .WithTags(Tag);
         
         app.MapPut($"{BaseRoute}/{{id:guid}}", UpdateSong)
@@ -43,7 +40,6 @@ public class SongEndpoints : IEndpoints
             .WithName(nameof(UpdateSong))
             .Produces<Song>(200, ContentType)
             .Produces(400)
-            .Produces(401)
             .Produces(404)
             .WithTags(Tag);
     }

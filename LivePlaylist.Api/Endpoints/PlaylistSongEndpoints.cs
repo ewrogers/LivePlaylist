@@ -11,6 +11,8 @@ public class PlaylistSongEndpoints : IEndpoints
     private const string ContentType = "application/json";
     private const string Tag = "Playlist Songs";
 
+    public static void AddServices(IServiceCollection services, IConfiguration configuration) { }
+
     public static void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapGet($"{BaseRoute}/songs", GetPlaylistSongs)

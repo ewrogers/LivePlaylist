@@ -60,32 +60,32 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Enable authorization for all endpoints below (intentionally after Swagger UI)
+// Enable authorization for all endpoints below
 app.UseAuthentication();
 app.UseAuthorization();
 
 // Basic logging middleware that logs all requests to console and debug output
-// app.Use(async (context, next) =>
-// {
-//     await next();
-//
-//     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-//
-//     // Log differently based on status code, without a bunch of copy-paste if statements
-//     Action<string?, object?[]> logFn = context.Response.StatusCode switch
-//     {
-//         >= 200 and < 400 => logger.LogInformation,
-//         _ => logger.LogError,
-//     };
-//
-//     logFn.Invoke("{Method} {Path} {StatusCode}",
-//         new object[]
-//         {
-//             context.Request.Method,
-//             context.Request.Path,
-//             context.Response.StatusCode
-//         });
-// });
+app.Use(async (context, next) =>
+{
+    await next();
+
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+    // Log differently based on status code, without a bunch of copy-paste if statements
+    Action<string?, object?[]> logFn = context.Response.StatusCode switch
+    {
+        >= 200 and < 400 => logger.LogInformation,
+        _ => logger.LogError,
+    };
+
+    logFn.Invoke("{Method} {Path} {StatusCode}",
+        new object[]
+        {
+            context.Request.Method,
+            context.Request.Path,
+            context.Response.StatusCode
+        });
+});
 
 // Map all endpoints in the assembly
 app.MapEndpoints<Program>();

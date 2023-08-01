@@ -11,7 +11,7 @@ public static class EndpointsExtensions
 
         foreach (var endpointType in endpointTypes)
         {
-            endpointType.GetMethod(nameof(IEndpoints.AddServices))!
+            endpointType.GetMethod(nameof(IEndpointCollection.AddServices))!
                 .Invoke(null, new object[] { services, configuration });
         }
     }
@@ -25,7 +25,7 @@ public static class EndpointsExtensions
 
         foreach (var endpointType in endpointTypes)
         {
-            endpointType.GetMethod(nameof(IEndpoints.MapEndpoints))!
+            endpointType.GetMethod(nameof(IEndpointCollection.MapEndpoints))!
                 .Invoke(null, new object[] { app });
         }
     }
@@ -33,6 +33,6 @@ public static class EndpointsExtensions
     private static IEnumerable<Type> GetEndpointTypesFromAssemblyContaining(Type type)
     {
         return type.Assembly.DefinedTypes
-            .Where(t => !t.IsAbstract && !t.IsInterface && typeof(IEndpoints).IsAssignableFrom(t));
+            .Where(t => !t.IsAbstract && !t.IsInterface && typeof(IEndpointCollection).IsAssignableFrom(t));
     }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using FluentValidation;
 using LivePlaylist.Api.Auth;
 using LivePlaylist.Api.Data;
@@ -61,7 +62,9 @@ app.UseSwaggerUI();
 // Basic logging middleware that logs all requests to console and debug output
 app.Use(async (context, next) =>
 {
+    var stopwatch = Stopwatch.StartNew();
     await next();
+    stopwatch.Stop();
 
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
 
@@ -72,18 +75,15 @@ app.Use(async (context, next) =>
         _ => logger.LogError,
     };
 
-    logFn.Invoke("{Method} {Path} {StatusCode}",
+    logFn.Invoke("{Method} {Path} {StatusCode} - {Elapsed}ms",
         new object[]
         {
             context.Request.Method,
             context.Request.Path,
-            context.Response.StatusCode
+            context.Response.StatusCode,
+            Math.Ceiling(stopwatch.Elapsed.TotalMilliseconds)
         });
 });
-
-// Enable authorization for all endpoints below
-app.UseAuthentication();
-app.UseAuthorization();
 
 // Map all endpoints in the assembly
 app.MapEndpoints<Program>();

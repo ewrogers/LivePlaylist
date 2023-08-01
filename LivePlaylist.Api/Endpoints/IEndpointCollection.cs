@@ -1,6 +1,6 @@
 namespace LivePlaylist.Api.Endpoints;
 
-public interface IEndpoints
+public interface IEndpointCollection
 {
     public static abstract void AddServices(IServiceCollection services, IConfiguration configuration);
 

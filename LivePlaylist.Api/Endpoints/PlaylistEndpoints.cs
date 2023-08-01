@@ -5,7 +5,7 @@ using LivePlaylist.Api.Services;
 
 namespace LivePlaylist.Api.Endpoints;
 
-public class PlaylistEndpointCollection : IEndpointCollection
+public class PlaylistEndpoints : IEndpointCollection
 {
     private const string BaseRoute = "playlists";
     private const string ContentType = "application/json";

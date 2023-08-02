@@ -14,6 +14,10 @@ body {
     @apply text-white bg-neutral-800;
 }
 
+.banner {
+    @apply text-white bg-indigo-800 border-b-2 border-indigo-600 px-4 py-2;
+}
+
 .list-item {
     @apply text-white text-lg bg-neutral-800 rounded-lg px-4 py-2 hover:bg-neutral-700;
 }
@@ -31,5 +35,29 @@ body {
 }
 
 .refresh-button:disabled {
+    @apply text-neutral-700 bg-neutral-900 border-neutral-700 cursor-not-allowed;
+}
+
+.create-button {
+    @apply text-white text-lg bg-emerald-950 border-2 border-emerald-600 rounded-lg px-4 py-2 hover:bg-emerald-800;
+}
+
+.create-button:active:enabled {
+    @apply bg-emerald-700 border-emerald-500;
+}
+
+.create-button:disabled {
+    @apply text-neutral-700 bg-neutral-900 border-neutral-700 cursor-not-allowed;
+}
+
+.delete-button {
+    @apply text-white text-lg bg-rose-950 border-2 border-rose-600 rounded-lg px-4 py-2 hover:bg-rose-800;
+}
+
+.delete-button:active:enabled {
+    @apply bg-rose-700 border-rose-500;
+}
+
+.delete-button:disabled {
     @apply text-neutral-700 bg-neutral-900 border-neutral-700 cursor-not-allowed;
 }

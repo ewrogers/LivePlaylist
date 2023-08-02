@@ -35,6 +35,15 @@ public class UserEndpointCollection : IEndpointCollection
             .Produces<User>(200, ContentType)
             .Produces(400)
             .WithTags(Tag);
+
+        app.MapDelete($"{BaseRoute}/{{username:regex(^[a-zA-Z0-9]+$)}}", DeleteUserByName)
+            .RequireAuthorization()
+            .WithName(nameof(DeleteUserByName))
+            .Produces(204)
+            .Produces(401)
+            .Produces(403)
+            .Produces(404)
+            .WithTags(Tag);
     }
     
     private static async Task<IResult> GetAllUsers(IUserService userService)
@@ -64,5 +73,17 @@ public class UserEndpointCollection : IEndpointCollection
         }
 
         return Results.CreatedAtRoute(nameof(GetUserByName), new { user.Username }, user);
+    }
+    
+    private static async Task<IResult> DeleteUserByName(string username, IUserService userService)
+    {
+        // Don't allow deleting the admin user
+        if (string.Equals(username, "admin", StringComparison.OrdinalIgnoreCase))
+        {
+            return Results.Forbid();
+        }
+        
+        var wasDeleted = await userService.DeleteAsync(username);
+        return wasDeleted ? Results.NoContent() : Results.NotFound();
     }
 }

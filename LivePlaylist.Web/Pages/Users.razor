@@ -1,13 +1,16 @@
 @page "/users"
 @inject HttpClient Http
 
-<div class="w-full h-full px-8 pt-4 pb-8">
-    <div class="w-full h-full flex flex-row space-x-8">
-        
+<div class="w-full h-full flex flex-col pb-8">
+    <Banner @ref="_banner">
+        <div>@_lastErrorMessage</div>
+    </Banner>
+    
+    <div class="w-stretch h-full flex flex-row space-x-8 mx-8 mt-8">
         <!-- Master list view  -->
         <div class="w-1/3 flex flex-col min-w-[300px] items-center justify-center">
             <div class="text-neutral-500 text-2xl pb-4">
-                @if(_users is not null)
+                @if (_users is not null)
                 {
                     <span class="text-neutral-700">Users (@(_users?.Count ?? 0))</span>
                 }
@@ -16,7 +19,7 @@
                     <span class="text-neutral-700">Users</span>
                 }
             </div>
-            
+
             <ListBox>
                 @if (_users == null || _isLoading)
                 {
@@ -34,7 +37,7 @@
                             <ListItem class='list-item' SelectedClass="list-item-active"
                                       IsSelected=@(_selectedUser == user)
                                       OnClick="@(() => OnUserSelected(user))">
-                                <div class="flex flex-row px-4 py-2">
+                                <div class="flex flex-row px-2 py-2">
                                     <div class="w-1/2 text-left font-bold">
                                         @@@user.Username.ToLowerInvariant()
                                     </div>
@@ -47,7 +50,7 @@
                     </div>
                 }
             </ListBox>
-            
+
             <button class="w-full refresh-button mt-2" onclick="@FetchUsersAsync" disabled="@_isLoading">
                 <div class="flex flex-row space-x-4 justify-center">
                     @if (_isLoading)
@@ -64,8 +67,15 @@
         </div>
 
         <!-- Details view -->
-        <div class="w-full">
-
+        <div class="w-full flex flex-col">
+            <div class="w-full flex flex-row space-x-4 justify-end">
+                <button class="create-button">
+                    Create User
+                </button>
+                <button class="delete-button" onclick="@DeleteSelectedUser" disabled="@(_selectedUser == null)">
+                    Delete User
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -75,8 +85,9 @@
     private bool _isLoading;
     private IReadOnlyCollection<User>? _users;
     private User? _selectedUser;
-    
-    
+    private Banner? _banner;
+    private string _lastErrorMessage = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         await FetchUsersAsync();
@@ -110,4 +121,35 @@
         }
     }
 
+    private async Task DeleteSelectedUser()
+    {
+        if (_selectedUser is null)
+            return;
+
+        var username = _selectedUser.Username;
+
+        Console.WriteLine($"Deleting user @{username} ({_selectedUser.DisplayName})...");
+        var response = await Http.DeleteAsync($"users/{username}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorMessage = $"Unable to delete user @{username} ({response.StatusCode})";
+            
+            ShowErrorBanner(errorMessage);
+            return;
+        }
+
+        Console.WriteLine($"Deleted user @{username} ({_selectedUser.DisplayName}) successfully");
+
+        _users = _users?.Where(u => u.Username != username).ToList();
+        _selectedUser = null;
+    }
+
+    private void ShowErrorBanner(string message)
+    {
+        Console.WriteLine($"Error: {message}");
+        
+        _lastErrorMessage = message;
+        _banner?.ShowWithDelay(10);
+    }
 }

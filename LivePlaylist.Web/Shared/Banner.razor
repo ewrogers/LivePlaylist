@@ -1,0 +1,60 @@
+@if (IsVisible)
+{
+    <div class="banner w-full flex flex-row space-x-6 place-items-center">
+        <div>
+            <img src="images/error.svg" alt="" width="32" height="32"/>
+        </div>
+        <div class="w-full text-lg">
+            @ChildContent
+        </div>
+        <div class="min-w-fit">
+            <button class="text-indigo-400 underline rounded-xl px-2 py-1" onclick="@Dismiss">
+                @if (_remainingSeconds > 0)
+                {
+                    <span class="min-w-[80px]">Dismiss (@_remainingSeconds)</span>
+                }
+                else
+                {
+                    <span>Dismiss</span>
+                }
+            </button>
+        </div>
+    </div>
+}
+
+@code {
+
+    private int _remainingSeconds;
+    
+    [Parameter] public bool IsVisible { get; set; }
+    
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    public void Show()
+    {
+        _remainingSeconds = 0;
+        IsVisible = true;
+    }
+    
+    public async Task ShowWithDelay(int seconds)
+    {
+        _remainingSeconds = seconds;
+        IsVisible = true;
+        
+        while (_remainingSeconds > 0)
+        {
+            await Task.Delay(1000);
+            _remainingSeconds--;
+            StateHasChanged();
+        }
+
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    public void Dismiss()
+    {
+        _remainingSeconds = 0;
+        IsVisible = false;
+    }
+}

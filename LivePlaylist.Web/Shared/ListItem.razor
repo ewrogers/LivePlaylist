@@ -1,0 +1,26 @@
+<button class="w-stretch @(Attributes.GetValueOrDefault("class", "")) @(IsSelected ? SelectedClass : "")"
+        onclick="@OnButtonClicked">
+    @ChildContent
+</button>
+
+@code {
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; } = new ();
+    
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public string SelectedClass { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+    
+    private async Task OnButtonClicked() => await OnClick.InvokeAsync();
+}
+
+

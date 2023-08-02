@@ -14,6 +14,10 @@ body {
     @apply text-white bg-neutral-800;
 }
 
-.container {
-    @apply w-full h-full m-0 p-4;
+.list-item {
+    @apply text-white text-lg bg-neutral-800 rounded-lg px-4 py-2 hover:bg-neutral-700;
+}
+
+.list-item-active {
+    @apply bg-indigo-700 hover:bg-indigo-600;
 }

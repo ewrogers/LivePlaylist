@@ -70,6 +70,10 @@ app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// Enable authorization and authentication
+app.UseAuthentication();
+app.UseAuthorization();
+
 // Basic logging middleware that logs all requests to console and debug output
 app.Use(async (context, next) =>
 {

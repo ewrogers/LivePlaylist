@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     // Allow requests from localhost:3000 (Swagger) and localhost:3001 (UI)
-    options.AddDefaultPolicy(x => x.WithOrigins("localhost:3000", "localhost:3001")
+    options.AddDefaultPolicy(x => x.WithOrigins("http://localhost:3000", "http://localhost:3001")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials());

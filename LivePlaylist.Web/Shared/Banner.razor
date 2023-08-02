@@ -25,7 +25,7 @@
 @code {
 
     private int _remainingSeconds;
-    
+
     [Parameter] public bool IsVisible { get; set; }
     
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -36,14 +36,21 @@
         IsVisible = true;
     }
     
-    public async Task ShowWithDelay(int seconds)
+    public async Task ShowWithDelay(int seconds, CancellationToken token = default)
     {
+        if (token.IsCancellationRequested)
+            return;
+        
         _remainingSeconds = seconds;
         IsVisible = true;
-        
+
         while (_remainingSeconds > 0)
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000, token);
+
+            if (token.IsCancellationRequested)
+                return;
+
             _remainingSeconds--;
             StateHasChanged();
         }

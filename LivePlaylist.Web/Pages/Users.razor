@@ -87,6 +87,7 @@
     private User? _selectedUser;
     private Banner? _banner;
     private string _lastErrorMessage = string.Empty;
+    private CancellationTokenSource? _cts;
 
     protected override async Task OnInitializedAsync()
     {
@@ -148,8 +149,11 @@
     private void ShowErrorBanner(string message)
     {
         Console.WriteLine($"Error: {message}");
+
+        _cts?.Cancel();
+        _cts = new CancellationTokenSource();
         
         _lastErrorMessage = message;
-        _banner?.ShowWithDelay(10);
+        _banner?.ShowWithDelay(10, _cts.Token);
     }
 }

@@ -55,7 +55,7 @@ builder.Services.AddSingleton<DataInitializer>();
 
 var app = builder.Build();
 
-// Enable swagger UI, viewable at https://localhost:5001/swagger/index.html
+// Enable swagger UI, viewable at /swagger/index.html
 app.UseSwagger();
 app.UseSwaggerUI();
 

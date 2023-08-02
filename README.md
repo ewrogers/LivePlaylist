@@ -37,6 +37,14 @@ cd LivePlaylist.Api
 dotnet run
 ```
 
+## Running the Unit Tests
+
+To run the unit tests, you can use the following command:
+
+```bash
+dotnet test -l "console;verbosity=normal"
+```
+
 ## Swagger Documentation
 
 The API documentation is automatically generated using Swagger.

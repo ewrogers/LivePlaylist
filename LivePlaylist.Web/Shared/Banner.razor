@@ -1,6 +1,6 @@
 @if (IsVisible)
 {
-    <div class="banner w-full flex flex-row space-x-6 place-items-center">
+    <div class="banner w-full flex flex-row space-x-4 place-items-center">
         <div>
             <img src="images/error.svg" alt="" width="32" height="32"/>
         </div>
@@ -8,7 +8,7 @@
             @ChildContent
         </div>
         <div class="min-w-fit">
-            <button class="text-indigo-400 underline rounded-xl px-2 py-1" onclick="@Dismiss">
+            <button class="text-indigo-200 underline rounded-xl px-2 py-1" onclick="@Dismiss">
                 @if (_remainingSeconds > 0)
                 {
                     <span class="min-w-[80px]">Dismiss (@_remainingSeconds)</span>

@@ -8,6 +8,15 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    // Allow requests from localhost:3000 (Swagger) and localhost:3001 (UI)
+    options.AddDefaultPolicy(x => x.WithOrigins("localhost:3000", "localhost:3001")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
+});
+
 // Adds all service dependencies for endpoints in the assembly
 builder.Services.AddEndpoints<Program>(builder.Configuration);
 
@@ -54,6 +63,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSingleton<DataInitializer>();
 
 var app = builder.Build();
+
+app.UseCors();
 
 // Enable swagger UI, viewable at /swagger/index.html
 app.UseSwagger();

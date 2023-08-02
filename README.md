@@ -14,6 +14,7 @@ The application is split into several projects:
 
 - [.NET Core 7](https://dotnet.microsoft.com/en-us/download)
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation) - Model validation
+- [FluentAssertions](https://github.com/fluentassertions/fluentassertions) - Unit test assertions
 - [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) - Swagger documentation
 - [TailwindCSS](https://tailwindcss.com/) - CSS framework & design system
 

@@ -6,5 +6,13 @@
 </div>
 
 @code {
-    
+    private IReadOnlyCollection<User> _users = Array.Empty<User>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Fetching users...");
+        var results = await Http.GetFromJsonAsync<User[]>("users");
+
+        _users = results ?? Array.Empty<User>();
+    }
 }

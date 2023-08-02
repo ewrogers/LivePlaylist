@@ -7,10 +7,18 @@
         <!-- Master list view  -->
         <div class="w-1/3 flex flex-col min-w-[300px] items-center justify-center">
             <div class="text-neutral-500 text-2xl pb-4">
-                Users (@(_users?.Count ?? 0))
+                @if(_users is not null)
+                {
+                    <span class="text-neutral-700">Users (@(_users?.Count ?? 0))</span>
+                }
+                else
+                {
+                    <span class="text-neutral-700">Users</span>
+                }
             </div>
+            
             <ListBox>
-                @if (_users == null)
+                @if (_users == null || _isLoading)
                 {
                     <LoadingIndicator/>
                 }
@@ -39,6 +47,20 @@
                     </div>
                 }
             </ListBox>
+            
+            <button class="w-full refresh-button mt-2" onclick="@FetchUsersAsync" disabled="@_isLoading">
+                <div class="flex flex-row space-x-4 justify-center">
+                    @if (_isLoading)
+                    {
+                        <span>Refreshing...</span>
+                    }
+                    else
+                    {
+                        <img src="images/refresh.svg" alt="refresh" width="24" height="24"/>
+                        <span>Refresh</span>
+                    }
+                </div>
+            </button>
         </div>
 
         <!-- Details view -->
@@ -49,26 +71,43 @@
 </div>
 
 @code {
-    
+
+    private bool _isLoading;
     private IReadOnlyCollection<User>? _users;
     private User? _selectedUser;
     
+    
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("Fetching users...");
-        var results = await Http.GetFromJsonAsync<User[]>("users");
-
-        // Add some delay to simulate a slow network
-        await Task.Delay(500);
-
-        _users = results ?? Array.Empty<User>();
-        Console.WriteLine($"Fetched {_users.Count} user(s) successfully");
+        await FetchUsersAsync();
     }
 
     private void OnUserSelected(User user)
     {
         _selectedUser= user;
         Console.WriteLine($"User @{user.Username} ({user.DisplayName}) was selected");
+    }
+
+    private async Task FetchUsersAsync()
+    {
+        _users = null;
+        _isLoading = true;
+        
+        try
+        {
+            Console.WriteLine("Fetching users...");
+            var results = await Http.GetFromJsonAsync<User[]>("users");
+
+            // Add some delay to simulate a slow network
+            await Task.Delay(300);
+
+            _users = results ?? Array.Empty<User>();
+            Console.WriteLine($"Fetched {_users.Count} user(s) successfully");
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
 }

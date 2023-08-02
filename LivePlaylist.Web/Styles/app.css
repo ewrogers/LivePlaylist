@@ -21,3 +21,15 @@ body {
 .list-item-active {
     @apply bg-indigo-700 hover:bg-indigo-600;
 }
+
+.refresh-button {
+    @apply text-white text-lg bg-neutral-800 rounded-lg px-4 py-2 hover:bg-neutral-700;
+}
+
+.refresh-button:active:enabled {
+    @apply bg-indigo-700 hover:bg-indigo-600;
+}
+
+.refresh-button:disabled {
+    @apply text-neutral-700 bg-neutral-900 border-neutral-700 cursor-not-allowed;
+}

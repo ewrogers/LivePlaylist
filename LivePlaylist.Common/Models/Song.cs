@@ -1,5 +1,5 @@
 
-namespace LivePlaylist.Api.Models;
+namespace LivePlaylist.Common.Models;
 
 public class Song
 {

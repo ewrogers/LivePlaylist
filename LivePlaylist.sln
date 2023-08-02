@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlaylist.Api.Tests", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlaylist.Web", "LivePlaylist.Web\LivePlaylist.Web.csproj", "{2718DC50-A28F-43A2-87B7-B447A8E819D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlaylist.Common", "LivePlaylist.Common\LivePlaylist.Common.csproj", "{5F0C46E4-8634-4495-BEAB-0D79E7C349C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{2718DC50-A28F-43A2-87B7-B447A8E819D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2718DC50-A28F-43A2-87B7-B447A8E819D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2718DC50-A28F-43A2-87B7-B447A8E819D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F0C46E4-8634-4495-BEAB-0D79E7C349C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F0C46E4-8634-4495-BEAB-0D79E7C349C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F0C46E4-8634-4495-BEAB-0D79E7C349C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F0C46E4-8634-4495-BEAB-0D79E7C349C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

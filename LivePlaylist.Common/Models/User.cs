@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LivePlaylist.Api.Models;
+namespace LivePlaylist.Common.Models;
 
 public class User
 {

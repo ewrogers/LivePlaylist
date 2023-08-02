@@ -13,3 +13,7 @@ body {
 .nav-item-active {
     @apply text-white bg-neutral-800;
 }
+
+.container {
+    @apply w-full h-full m-0 p-4;
+}

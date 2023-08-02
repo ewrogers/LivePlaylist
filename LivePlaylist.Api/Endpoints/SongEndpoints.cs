@@ -1,6 +1,6 @@
 using LivePlaylist.Api.Filters;
-using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
+using LivePlaylist.Common.Models;
 
 namespace LivePlaylist.Api.Endpoints;
 

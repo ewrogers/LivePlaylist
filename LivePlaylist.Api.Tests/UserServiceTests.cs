@@ -1,7 +1,7 @@
 
 using FluentAssertions;
-using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
+using LivePlaylist.Common.Models;
 
 namespace LivePlaylist.Api.Tests;
 

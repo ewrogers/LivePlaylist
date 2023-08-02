@@ -3,9 +3,10 @@
 This repository serves as a proof of concept for writing a minimal web application that allows users
 to create and share playlists of songs.
 
-The application is split into three projects:
+The application is split into several projects:
 
 - `LivePlaylist.Api` - Minimal API service that allows users to create and modify playlists
+- `LivePlaylist.Common` - Common models and services used by the API and Web projects
 - `LivePlaylist.Web` - Blazor Web Assembly app that acts as a front-end for the API
 - `LivePlaylist.Tests` - Unit tests for the API services
 
@@ -25,7 +26,7 @@ The API project is structured as follows:
 - `Endpoints/` - Contains the API endpoints for the application
 - `Examples/` - Contains examples of accessing the API endpoints
 - `Filters/` - Contains the filters (middleware) used by endpoints
-- `Models/` - Contains the models used by the application
+- `Models/` - Contains the DTO models used by the API specifically
 - `Services/` - Contains the services used by the application
 - `Validators/` - Contains the validators used by the application
 - `Program.cs` - Entry point for the application that configures the API

@@ -1,4 +1,5 @@
 using LivePlaylist.Api.Models;
+using LivePlaylist.Common.Models;
 
 namespace LivePlaylist.Api.Services;
 

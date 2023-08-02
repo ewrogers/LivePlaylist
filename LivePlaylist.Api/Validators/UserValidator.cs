@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using FluentValidation;
-using LivePlaylist.Api.Models;
+using LivePlaylist.Common.Models;
 
 namespace LivePlaylist.Api.Validators;
 

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace LivePlaylist.Api.Models;
+namespace LivePlaylist.Common.Models;
 
 public class PlaylistEntry
 {

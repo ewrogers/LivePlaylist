@@ -1,6 +1,6 @@
 using System.Text;
-using LivePlaylist.Api.Models;
 using LivePlaylist.Api.Services;
+using LivePlaylist.Common.Models;
 
 namespace LivePlaylist.Api.Data;
 

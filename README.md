@@ -3,10 +3,11 @@
 This repository serves as a proof of concept for writing a minimal web application that allows users
 to create and share playlists of songs.
 
-It is written in .NET Core 7 and follows the C# minimal API conventions, using basic in-memory collection to store data.
+The application is split into three projects:
 
-Services are injected using the built-in dependency injection container `IServiceCollection`.
-This is commonly used in .NET Core applications and allows for easy testing and mocking of services.
+- `LivePlaylist.Api` - Minimal API service that allows users to create and modify playlists
+- `LivePlaylist.Web` - Blazor Web Assembly app that acts as a front-end for the API
+- `LivePlaylist.Tests` - Unit tests for the API services
 
 ## Dependencies
 
@@ -14,9 +15,9 @@ This is commonly used in .NET Core applications and allows for easy testing and 
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation) - Model validation
 - [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) - Swagger documentation
 
-## Project Structure
+## API Project Structure
 
-The project is structured as follows:
+The API project is structured as follows:
 
 - `Auth/` - Contains authorization and authentication schemes
 - `Data/` - Contains data parsers and initialization helpers
@@ -28,7 +29,10 @@ The project is structured as follows:
 - `Validators/` - Contains the validators used by the application
 - `Program.cs` - Entry point for the application that configures the API
 
-## Running the API
+Services are injected using the built-in dependency injection container `IServiceCollection`.
+This is commonly used in .NET Core applications and allows for easy testing and mocking of services.
+
+### Running the API
 
 To run the API, you can use the following command:
 
@@ -37,7 +41,15 @@ cd LivePlaylist.Api
 dotnet run
 ```
 
-## Running the Unit Tests
+This will start the API on [http://localhost:3000](http://localhost:3000).
+
+### Swagger Documentation
+
+The API documentation is automatically generated using Swagger.
+
+You can access the documentation by running the API and navigating to [http://localhost:3000/swagger/index.html](http://localhost:3000/swagger/index.html).
+
+### Unit Tests
 
 To run the unit tests, you can use the following command:
 
@@ -45,13 +57,7 @@ To run the unit tests, you can use the following command:
 dotnet test -l "console;verbosity=normal"
 ```
 
-## Swagger Documentation
-
-The API documentation is automatically generated using Swagger.
-
-You can access the documentation by running the API and navigating to [http://localhost:3000/swagger/index.html](http://localhost:3000/swagger/index.html).
-
-## Authentication
+### Authentication
 
 The API uses a very basic "API Key" authentication scheme to simplify the proof of concept:
 
@@ -63,7 +69,7 @@ There are no passwords or special JWTs, just a simple username that is used to i
 
 Obviously this is not secure and would need to be replaced with an actual authentication scheme in a production application.
 
-## Request Flow
+### Request Flow
 
 The API endpoints generally follow this flow:
 
@@ -73,7 +79,7 @@ The API endpoints generally follow this flow:
 
 Filters are optional middleware that can be applied to endpoints to perform additional validation or logging.
 
-## Seed Data
+### Seed Data
 
 The API will automatically seed the in-memory data store with some initial data on startup:
 
@@ -82,7 +88,7 @@ The API will automatically seed the in-memory data store with some initial data 
 
 This can be modified in the `DataInitializer` class in the `InitializeAsync` method.
 
-## Automatic Endpoint Registration
+### Automatic Endpoint Registration
 
 The `EndpointsExtensions` class extension methods that allow automatic service and endpoint registration
 for all classes that implement the `IEndpoints` interface within the assembly.
@@ -91,3 +97,15 @@ This is called in the `Program.cs` file to register all endpoints without the ne
 
 This helps promote the Open/Closed principle by allowing new endpoints to be added without
 having to modify the `Program.cs` file.
+
+## Web UI Project Structure
+
+### Running the Web UI
+
+To run the web UI, you can use the following command:
+
+```bash
+cd LivePlaylist.Web
+dotnet run
+```
+This will start the web UI on [http://localhost:3001](http://localhost:3000).

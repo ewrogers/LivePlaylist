@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply text-white bg-neutral-950;
+}
+
+.nav-item {
+    @apply text-neutral-100 text-xl rounded-lg px-4 py-2 hover:text-white hover:bg-neutral-800;
+}
+
+.nav-item-active {
+    @apply text-white bg-neutral-800;
+}

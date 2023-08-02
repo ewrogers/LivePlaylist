@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlaylist.Api", "LivePla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlaylist.Api.Tests", "LivePlaylist.Api.Tests\LivePlaylist.Api.Tests.csproj", "{933D5302-1B0B-4553-BB27-7BFC81CB8601}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlaylist.Web", "LivePlaylist.Web\LivePlaylist.Web.csproj", "{0E7E9FF3-CFD9-4405-9D0B-867CD7B70578}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlaylist.Web", "LivePlaylist.Web\LivePlaylist.Web.csproj", "{2718DC50-A28F-43A2-87B7-B447A8E819D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,9 +20,9 @@ Global
 		{933D5302-1B0B-4553-BB27-7BFC81CB8601}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{933D5302-1B0B-4553-BB27-7BFC81CB8601}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{933D5302-1B0B-4553-BB27-7BFC81CB8601}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E7E9FF3-CFD9-4405-9D0B-867CD7B70578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E7E9FF3-CFD9-4405-9D0B-867CD7B70578}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E7E9FF3-CFD9-4405-9D0B-867CD7B70578}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E7E9FF3-CFD9-4405-9D0B-867CD7B70578}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2718DC50-A28F-43A2-87B7-B447A8E819D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2718DC50-A28F-43A2-87B7-B447A8E819D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2718DC50-A28F-43A2-87B7-B447A8E819D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2718DC50-A28F-43A2-87B7-B447A8E819D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

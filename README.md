@@ -14,6 +14,7 @@ The application is split into three projects:
 - [.NET Core 7](https://dotnet.microsoft.com/en-us/download)
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation) - Model validation
 - [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) - Swagger documentation
+- [TailwindCSS](https://tailwindcss.com/) - CSS framework & design system
 
 ## API Project Structure
 
@@ -100,6 +101,15 @@ having to modify the `Program.cs` file.
 
 ## Web UI Project Structure
 
+The web UI is a Blazor Web Assembly project and structured as follows:
+
+- `wwwroot/` - Contains static files for HTML, CSS, and JavaScript
+- `Pages/` - Contains the Blazor pages
+- `Shared/` - Contains shared Blazor components
+- `Styles/` - Contains the TailwindCSS style definitions
+- `MainLayout.razor` - The main layout used by all pages
+- `Program.cs` - Entry point for the application that configures the Blazor app
+
 ### Running the Web UI
 
 To run the web UI, you can use the following command:
@@ -109,3 +119,25 @@ cd LivePlaylist.Web
 dotnet run
 ```
 This will start the web UI on [http://localhost:3001](http://localhost:3000).
+
+### Hot-reloading
+
+As of .NET 6, hot-reloading is enabled by default for Blazor Web Assembly projects:
+
+```bash
+cd LivePlaylist.Web
+dotnet watch
+```
+
+This will automatically recompile and reload the web UI when changes are made.
+
+### TailwindCSS Generation
+
+The TailwindCSS styles are generated using the `TailwindCSS` CLI tool:
+
+```bash
+cd LivePlaylist.Web
+npx tailwindcss -i ./Styles/app.css -o ./wwwroot/css/app.css --watch
+```
+
+This will automatically recompile the TailwindCSS styles when changes are made, and works well with hot-reloading.

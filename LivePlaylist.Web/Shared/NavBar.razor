@@ -1,0 +1,28 @@
+
+<nav class="w-full flex flex-row place-items-center p-4 border-b-2 border-indigo-700">
+    <div class="min-w-fit text-white text-2xl text-center bg-indigo-700 rounded-lg px-4 py-2">
+        <NavLink href="/">
+            Live Playlist UI
+        </NavLink>
+    </div>
+
+    <div class="w-full flex flex-row space-x-8 content-center px-8 bg-red">
+        <NavLink class="nav-item" ActiveClass="nav-item-active" href="playlists" Match="NavLinkMatch.All">
+            <div>Playlists</div>
+        </NavLink>
+        <NavLink class="nav-item" ActiveClass="nav-item-active" href="songs" Match="NavLinkMatch.All">
+            <div>Songs</div>
+        </NavLink>
+        <NavLink class="nav-item" ActiveClass="nav-item-active" href="users" Match="NavLinkMatch.All">
+            <div>Users</div>
+        </NavLink>
+    </div>
+    
+    <div class="px-4 justify-end">
+        CURRENT_USER
+    </div>
+</nav>
+
+@code {
+    
+}
